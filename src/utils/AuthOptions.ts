@@ -35,13 +35,13 @@ export const AuthOptions: NextAuthOptions = {
                     const user = await User.findOne<any>({ username });
 
                     if (!user) {
-                        throw new Error('No user found');
+                        return NextResponse.json({ message: 'user not found' });
                     }
 
                     // Compare passwords
                     const isPasswordValid = await bcrypt.compare(password, user.password);
                     if (!isPasswordValid) {
-                        throw new Error('Invalid password');
+                        return NextResponse.json({ message: 'password is incorrect'});
                     }
 
                     // Add user information to the token
