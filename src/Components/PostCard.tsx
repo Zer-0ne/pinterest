@@ -263,7 +263,10 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
                                             component={`div`}
                                         >
                                             <Link
-                                                style={styles.displayFlex}
+                                                style={{
+                                                    display:'flex',
+                                                    alignItems:'center'
+                                                }}
                                                 href={`/Profile/${data[0]?.user?.id}`}
                                             >
                                                 {data[0]?.user?.name}
@@ -271,10 +274,16 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
                                                     (data[0]?.user?.isAdmin) ?
                                                         <>
                                                             <MdVerifiedUser
-                                                                style={styles.verified}
+                                                                style={{color:'rgb(0, 149, 246)',
+                                                                fill:'rgb(0, 149, 246)',
+                                                                margin:'0 1px',
+                                                                fontSize:'18px'}}
                                                             />
                                                             <MdVerified
-                                                                style={styles.verified}
+                                                                style={{color:'rgb(0, 149, 246)',
+                                                                fill:'rgb(0, 149, 246)',
+                                                                margin:'0 1px',
+                                                                fontSize:'18px'}}
                                                             />
                                                         </> : ''
 
