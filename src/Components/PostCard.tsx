@@ -1,4 +1,4 @@
-import {  follow, newComment, savePost, } from '@/utils/FetchFromApi';
+import { follow, newComment, savePost, } from '@/utils/FetchFromApi';
 import { styles } from '@/utils/styles'
 import { Avatar, Box, Button, Input, Typography } from '@mui/material'
 import { useSession } from 'next-auth/react';
@@ -9,29 +9,11 @@ import React, { useRef } from 'react'
 import { BiLink } from 'react-icons/bi';
 import Comment from './Comment';
 import { IoIosSend } from "react-icons/io";
-import { CommentProps, Data, } from '@/utils/constant';
+import { CommentProps, Data, PostCardProps, } from '@/utils/constant';
 import Loading from './Loading';
+import { MdVerified, MdVerifiedUser } from "react-icons/md";
 export interface card {
-    data: {
-        Pin: {
-            image?: string;
-            title?: string;
-            _id: string;
-            comments: [];
-            authorId: string
-        },
-        user: {
-            name: string | undefined | null;
-            username: string | undefined | null;
-            id: string;
-            image: string | undefined | null;
-            saved: [];
-            followers: [] | undefined | null;
-            followings: [] | undefined | null;
-            posts: [] | undefined | null;
-
-        }
-    }[];
+    data: PostCardProps[];
     src?: string | undefined | null;
     fetchdata: () => Promise<void>
 }
@@ -284,6 +266,18 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
                                                 href={`/Profile/${data[0]?.user?.id}`}
                                             >
                                                 {data[0]?.user?.name}
+                                                {
+                                                    (data[0]?.user?.isAdmin) ?
+                                                        <>
+                                                            <MdVerifiedUser
+                                                                style={styles.verified}
+                                                            />
+                                                            <MdVerified
+                                                                style={styles.verified}
+                                                            />
+                                                        </> : ''
+
+                                                }
                                             </Link>
                                         </Typography>
                                         <Typography

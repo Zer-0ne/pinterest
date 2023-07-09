@@ -224,15 +224,5 @@ export interface PostCardProps {
         authorId: string;
         tag:string
     },
-    user: {
-        name: string | undefined | null;
-        username: string | undefined | null;
-        id: string;
-        image: string | undefined | null;
-        saved: [];
-        followers: [] | undefined | null;
-        followings: [] | undefined | null;
-        posts: [] | undefined | null;
-
-    }
+    user: User
 }
