@@ -148,7 +148,6 @@ const AuthCard = () => {
             } else {
                 console.log('User is not logged in');
             }
-            console.log('success');
 
         } catch (error: any) {
             console.log(error.message)

@@ -21,7 +21,7 @@ export const AuthOptions: NextAuthOptions = {
             name: 'Credentials',
             credentials: {
                 username: { label: 'username', type: 'string' },
-                password: { label: 'Password', type: 'pasword' }
+                password: { label: 'Password', type: 'password' }
             },
             async authorize(credentials) {
 
@@ -35,13 +35,13 @@ export const AuthOptions: NextAuthOptions = {
                     const user = await User.findOne<any>({ username });
 
                     if (!user) {
-                        return NextResponse.json({ message: 'user not found' });
+                        return Promise.resolve(null)
                     }
 
                     // Compare passwords
                     const isPasswordValid = await bcrypt.compare(password, user.password);
                     if (!isPasswordValid) {
-                        return NextResponse.json({ message: 'password is incorrect'});
+                        return Promise.resolve(null)
                     }
 
                     // Add user information to the token
@@ -56,12 +56,14 @@ export const AuthOptions: NextAuthOptions = {
         }),
     ],
     jwt: {
+        // encryption: true,
         secret: process.env.JWT_SECRET,
     },
     callbacks: {
         async jwt({ token, user }) {
             // Access the user information stored in the token
             // console.log(user);
+
             if (user) {
                 // Update the token with the user information
                 token.id = user.id;
