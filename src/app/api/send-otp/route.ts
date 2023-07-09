@@ -32,7 +32,7 @@ export const POST = async (request: NextRequest, { params }: any) => {
                 secure: true,
                 auth: {
                     user: 'zer.0n3.sys@gmail.com',
-                    pass: 'bjkmmnguxovlxiiw',
+                    pass: process.env.EMAIL_PASSWORD,
                 },
             });
 
@@ -67,7 +67,7 @@ export const POST = async (request: NextRequest, { params }: any) => {
             secure: true,
             auth: {
                 user: 'zer.0n3.sys@gmail.com',
-                pass: 'bjkmmnguxovlxiiw',
+                pass: process.env.EMAIL_PASSWORD,
             },
         });
 
