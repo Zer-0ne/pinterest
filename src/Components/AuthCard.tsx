@@ -67,7 +67,7 @@ const AuthCard = () => {
             adminPassword,
             image
         } = data
-        if (!name! || username! || email! || otp! || password! || adminPassword! || image) {
+        if (!name || !username || !email || !otp || !password || !adminPassword || !image) {
             alert('fill required feilds')
             return
         }
