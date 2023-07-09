@@ -263,6 +263,7 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
                                             component={`div`}
                                         >
                                             <Link
+                                                style={styles.displayFlex}
                                                 href={`/Profile/${data[0]?.user?.id}`}
                                             >
                                                 {data[0]?.user?.name}
