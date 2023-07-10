@@ -142,10 +142,26 @@ const Profile: React.FC<Data> = ({ data }) => {
                 (session?.user?.id === data?.user?.id) ?
                     (sessionStatus != 'authenticated') ?
                         <FiLogIn
+                            style={{
+                                color:'#d5d5d57d',
+                                position:'absolute',
+                                top:100,
+                                right:60,
+                                cursor:"pointer",
+                                zIndex:10
+                            }}
                             onClick={() => (<AuthCard />)}
                         /> :
                         <FiLogOut
-                            onClick={() => signOut}
+                            style={{
+                                color:'#d5d5d57d',
+                                position:'absolute',
+                                top:100,
+                                right:60,
+                                cursor:"pointer",
+                                zIndex:10
+                            }}
+                            onClick={signOut}
                         /> :
                     <></>}
 
@@ -302,7 +318,7 @@ const Profile: React.FC<Data> = ({ data }) => {
                             fontVariant: 'all-petite-caps'
                         }}
                     >
-                        this is no post yet!
+                        there is no post yet!
                     </Box> :
                     <MasonryList
                         size={2}
