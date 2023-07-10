@@ -161,7 +161,7 @@ const Profile: React.FC<Data> = ({ data }) => {
                                 cursor:"pointer",
                                 zIndex:10
                             }}
-                            onClick={signOut}
+                            onClick={() => signOut()}
                         /> :
                     <></>}
 
