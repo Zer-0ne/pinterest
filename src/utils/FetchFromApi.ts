@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+
 // 'use server'
 interface FetchFromApiProps {
     data: {
@@ -18,9 +20,10 @@ interface FetchFromApiProps {
     }
 }
 
-export const singleUser = async (id: string) => {
+export const singleUser = async (_id: string) => {
+    // const id = toast.loading("Please wait...")
     try {
-        const response = await fetch(`/api/user/${id}`, {
+        const response = await fetch(`/api/user/${_id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -29,18 +32,33 @@ export const singleUser = async (id: string) => {
         });
         if (response.ok) {
             const responseData = await response.json()
+            // toast.update(id, {
+            //     render: responseData.message, type: "success", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+            //     pauseOnHover: true,
+            //     draggable: true,
+            //     progress: undefined,
+            //     theme: "dark",
+            // });
             const { data } = await responseData
             return data;
         }
         console.error('failed to fetch')
         return
     } catch (error) {
+        // toast.update(id, {
+        //     render: "Something went wrong", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+        //     pauseOnHover: true,
+        //     draggable: true,
+        //     progress: undefined,
+        //     theme: "dark",
+        // });
         console.error(error)
     }
 }
-export const singlePin = async (id: string) => {
+export const singlePin = async (_id: string) => {
+    const id = toast.loading("Please wait...")
     try {
-        const response = await fetch(`/api/pins/${id}`, {
+        const response = await fetch(`/api/pins/${_id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -49,18 +67,32 @@ export const singlePin = async (id: string) => {
         });
         if (response.ok) {
             const responseData = await response.json()
+            toast.update(id, {
+                render: responseData.message, type: "success", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
             const { Pin } = await responseData
             // console.log(Pin)
             return Pin;
         }
     } catch (error) {
-
+        toast.update(id, {
+            render: "Something went wrong", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        });
     }
 }
-export const follow = async (id: string) => {
+export const follow = async (_id: string) => {
+    const id = toast.loading("Please wait...")
     try {
 
-        const response = await fetch(`/api/follow/${id}`, {
+        const response = await fetch(`/api/follow/${_id}`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -69,16 +101,31 @@ export const follow = async (id: string) => {
         });
         if (response.ok) {
             const responseData = await response.json();
+            toast.update(id, {
+                render: responseData.message, type: "success", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
             return responseData;
         }
 
     } catch (error) {
         console.error(error)
+        toast.update(id, {
+            render: "Something went wrong", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        });
     }
 }
-export const savePost = async (id: string) => {
+export const savePost = async (_id: string) => {
+    const id = toast.loading("Please wait...")
     try {
-        const response = await fetch(`/api/pins/${id}`, {
+        const response = await fetch(`/api/pins/${_id}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -86,29 +133,60 @@ export const savePost = async (id: string) => {
         })
         if (response.ok) {
             const responseData = await response.json()
+            toast.update(id, {
+                render: responseData.message, type: "success", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
             return responseData
         }
     } catch (error) {
         console.log(error)
+        toast.update(id, {
+            render: "Something went wrong", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        });
     }
 }
-export const editPin = async (id: string, data: object) => {
+export const editPin = async (_id: string, data: object) => {
+    const id = toast.loading("Please wait...")
     try {
-        const response = await fetch(`/api/pins/${id}`, {
+        const response = await fetch(`/api/pins/${_id}`, {
             method: 'PUT',
             body: JSON.stringify({ ...data }),
         })
         if (response.ok) {
             const responseData = await response.json()
+            toast.update(id, {
+                render: responseData.message, type: "success", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
             return responseData
         }
         return { message: 'failed to fetch!' }
     } catch (error) {
         console.log(error)
+        toast.update(id, {
+            render: "Something went wrong", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        });
         return { message: 'Internal server error' }
+
     }
 }
 export const newComment = async (data: object) => {
+    const id = toast.loading("Please wait...")
     try {
         const response = await fetch('/api/comment', {
             method: 'POST',
@@ -116,25 +194,85 @@ export const newComment = async (data: object) => {
         })
         if (response.ok) {
             const responseData = await response.json()
+            toast.update(id, {
+                render: responseData.message, type: "success", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
             return responseData
         }
     } catch (error) {
         console.log(error)
+        toast.update(id, {
+            render: "Something went wrong", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        });
     }
 }
-export const deleteComment = async (id: string) => {
+export const deleteComment = async (_id: string) => {
+    const id = toast.loading("Please wait...")
     try {
-        const response = await fetch(`/api/comment/${id}`, {
+        const response = await fetch(`/api/comment/${_id}`, {
             method: 'DELETE',
             headers: {
                 "Content-Type": "application/json",
             },
         })
-        if(response.ok){
+        if (response.ok) {
             const responseData = await response.json()
+            toast.update(id, {
+                render: responseData.message, type: "success", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
             return responseData
         }
     } catch (error) {
         console.log(error)
+        toast.update(id, {
+            render: "Something went wrong", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        });
+    }
+}
+export const deletePin = async (_id: string) => {
+    const id = toast.loading("Please wait...")
+    try {
+        const response = await fetch(`/api/pins/${_id}`, {
+            method: 'DELETE',
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        if (response.ok) {
+            const responseData = await response.json()
+            toast.update(id, {
+                render: responseData.message, type: "success", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+            return responseData
+        }
+    } catch (error) {
+        console.log(error)
+        toast.update(id, {
+            render: "Something went wrong", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        });
     }
 }

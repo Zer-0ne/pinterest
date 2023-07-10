@@ -48,9 +48,9 @@ export const AuthOptions: NextAuthOptions = {
                     return user;
                 } catch (error: unknown) {
                     if (error instanceof Error) {
-                        return NextResponse.json({ message: error.message });
+                        return Promise.resolve(null)
                     }
-                    return NextResponse.json({ message: 'An error occurred' });
+                    return Promise.resolve(null)
                 }
             },
         }),

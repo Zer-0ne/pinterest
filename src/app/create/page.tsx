@@ -1,21 +1,30 @@
 "use client"
+import AuthCard from '@/Components/AuthCard'
 import Body from '@/Components/Body'
 import CreateModal from '@/Components/CreateModal'
 import Form from '@/Components/Form'
+import Loading from '@/Components/Loading'
+import { Data } from '@/utils/constant'
 import { styles } from '@/utils/styles'
 import { Box, Button, Typography } from '@mui/material'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
-interface Data {
+import { toast } from 'react-toastify'
+interface data {
     [key: string]: any;
 }
 const page = () => {
     const [open, setOpen] = React.useState(false);
+    const { data: session, status: sessionStatus } = useSession() as Data;
     const router = useRouter()
-    const [data, setData] = useState<Data>({});
+    const [data, setData] = useState<data>({});
     const [img, setImg] = useState<File | null>(null);
     const inputRef = React.useRef<HTMLDivElement>(null)
     const formData = new FormData();
+    if (sessionStatus === 'loading') {
+        return <Loading />;
+    }
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         if (name === 'image') {
@@ -36,33 +45,58 @@ const page = () => {
         }
         setData((prevFormData) => ({ ...prevFormData, [name]: value }));
     }
+    if(!session){
+        return <AuthCard/>
+    }
     const handleSubmit = async (e: any) => {
+        const id = toast.loading("Please wait...")
         e.preventDefault();
+        if (sessionStatus != 'authenticated') {
+            toast.update(id, {
+                autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark", render: 'please login!', type: "error", isLoading: false
+            });
+            return
+        }
         Object.entries(data).forEach(([key, value]) => {
             // if(!value){
-                
+
             // }
             formData.append(key, value)
         });
-        
+
         try {
-            if(img){
+            if (img) {
                 formData.append('image', img)
             }
             const response = await fetch('/api/pins', {
                 method: "POST",
                 body: JSON.stringify({ ...data }),
-                // headers: {
-                //     "Content-Type": "multipart/form-data",
-                // },
             })
             if (response.ok) {
                 router.refresh()
                 const responseData = await response.json()
-                setOpen(false)
+                toast.update(id, {
+                    autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark", render: responseData.message, type: "success", isLoading: false
+                });
+                setImg(null)
                 // console.log(responseData)
             } else {
                 console.error('Failed to fetch data')
+                toast.update(id, {
+                    autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark", render: "Something went wrong", type: "error", isLoading: false
+                });
             }
         } catch (error) {
             console.log(error)

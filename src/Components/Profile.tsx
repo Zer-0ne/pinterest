@@ -2,11 +2,12 @@ import { styles } from '@/utils/styles'
 import { Avatar, Box, Button, Typography } from '@mui/material'
 import React from 'react'
 import MasonryList from './MasonaryList'
-import { useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import AuthCard from './AuthCard'
 import { follow, singlePin, singleUser } from '@/utils/FetchFromApi'
 import { Data, Post, saveCreateBtn } from '@/utils/constant'
 import { MdVerified, MdVerifiedUser } from "react-icons/md";
+import { FiLogIn, FiLogOut } from "react-icons/fi";
 import Loading from './Loading'
 const Profile: React.FC<Data> = ({ data }) => {
     const { data: session, status: sessionStatus } = useSession() as Data;
@@ -117,9 +118,11 @@ const Profile: React.FC<Data> = ({ data }) => {
         return <Loading />;
     }
 
-    if (!session) {
-        // User is not authenticated, show login/signup component
-        return <AuthCard />;
+    if (session?.user?.id === data?.user?.id) {
+        if (sessionStatus != 'authenticated') {
+            return <AuthCard />;
+            // User is not authenticated, show login/signup component
+        }
     }
     return (
         <Box
@@ -134,7 +137,19 @@ const Profile: React.FC<Data> = ({ data }) => {
                     paddingBottom: 3
                 }
             ]}
-        >{
+        >
+            {
+                (session?.user?.id === data?.user?.id) ?
+                    (sessionStatus != 'authenticated') ?
+                        <FiLogIn
+                            onClick={() => (<AuthCard />)}
+                        /> :
+                        <FiLogOut
+                            onClick={() => signOut}
+                        /> :
+                    <></>}
+
+            {
                 (data?.user?.image) ?
                     <Avatar
                         sx={{

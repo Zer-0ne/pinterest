@@ -9,10 +9,11 @@ import ImageCard from './ImageCard';
 export interface MasonryListProps {
     size?: any;
     data: Post[];
+    fetchData?: () => Promise<void>
     // Data:Post[];
 }
 
-const MasonryList: React.FC<MasonryListProps> = ({ size, data }) => {
+const MasonryList: React.FC<MasonryListProps> = ({ size, data,fetchData }) => {
     
     return (
         <Box sx={[
@@ -25,6 +26,7 @@ const MasonryList: React.FC<MasonryListProps> = ({ size, data }) => {
                     <ImageCard
                         item={item}
                         key={index}
+                        fetchData={fetchData}
                     />
                 ))}
             </Masonry >

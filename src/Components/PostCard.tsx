@@ -1,4 +1,4 @@
-import { follow, newComment, savePost, } from '@/utils/FetchFromApi';
+import { deletePin, follow, newComment, savePost, singleUser, } from '@/utils/FetchFromApi';
 import { styles } from '@/utils/styles'
 import { Avatar, Box, Button, Input, Typography } from '@mui/material'
 import { useSession } from 'next-auth/react';
@@ -7,18 +7,25 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useRef } from 'react'
 import { BiLink } from 'react-icons/bi';
+import { RiEditBoxFill } from 'react-icons/ri';
 import Comment from './Comment';
 import { IoIosSend } from "react-icons/io";
-import { CommentProps, Data, PostCardProps, } from '@/utils/constant';
+import { CommentProps, Data, Post, PostCardProps, SessionsProps, User, } from '@/utils/constant';
 import Loading from './Loading';
-import { MdVerified, MdVerifiedUser } from "react-icons/md";
+import { MdVerified, MdVerifiedUser, MdOutlineDelete } from "react-icons/md";
+import { toast } from 'react-toastify';
+import AuthCard from './AuthCard';
+import ModalStructure from './Modal';
+import EditForm from './EditForm';
 export interface card {
     data: PostCardProps[];
     src?: string | undefined | null;
     fetchdata: () => Promise<void>
 }
 const PostCard: React.FC<card> = ({ data, fetchdata }) => {
+    const [loginedData, setLoginedData] = React.useState<SessionsProps>()
     const router = useRouter();
+    const [open, setOpen] = React.useState(false)
     const { data: session, status: sessionStatus } = useSession() as Data;
     const cardContainerRef = useRef<HTMLDivElement>(null);
     const cardRef = useRef<HTMLDivElement>(null);
@@ -94,6 +101,68 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
         setCommentData((prevValues) => ({ ...prevValues, [name]: value }))
     }
 
+    // handle Delete
+    const handleDelete = async () => {
+        const id = toast.loading("Please wait...")
+        if (session && session.user) {
+            const loginUser = await singleUser(session.user.id)
+            setLoginedData(loginUser)
+            if (session?.user?.id != data[0].Pin.authorId || loginUser.user.isAdmin) {
+                toast.update(id, {
+                    render: "You are Not Authorized", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                return
+            }
+        }
+        if (sessionStatus != 'authenticated') {
+            toast.update(id, {
+                render: "Please login first", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+            return <AuthCard />
+        }
+        await deletePin(data[0].Pin._id)
+    }
+
+
+    // handle edit 
+    const handleEdit = async () => {
+        if (session && session.user) {
+            const id = toast.loading("Please wait...")
+            const loginUser = await singleUser(session.user.id)
+            setLoginedData(loginUser)
+            if (session.user.id != data[0].Pin.authorId || !loginUser.user.isAdmin) {
+                toast.update(id, {
+                    render: "You are Not Authorized", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                return
+            }
+        }
+        if (sessionStatus != 'authenticated') {
+            const id = toast.loading("Please wait...")
+            toast.update(id, {
+                render: "Please login first", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+            return <AuthCard />
+        }
+        setOpen(true)
+    }
+
     if (sessionStatus === 'loading') {
         return <Loading />;
     }
@@ -152,6 +221,7 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
                             />
                         )}
                     </Box>
+
                     <Box
                         sx={[
                             styles.flex1,
@@ -182,14 +252,43 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
                                     styles.alignItemCenter
                                 ]}
                             >
-                                <BiLink
-                                    style={{
-                                        cursor: 'pointer',
-                                        padding: 3,
-                                        fontSize: 25,
-                                    }}
-                                    onClick={handleCopy}
-                                />
+                                <Box
+                                    sx={[styles.displayFlex, {
+                                        justifyContent: 'space-evenly',
+                                        maxWidth: '35%'
+                                    }]}
+                                >
+
+                                    <BiLink
+                                        style={{
+                                            cursor: 'pointer',
+                                            padding: 3,
+                                            fontSize: 28,
+                                        }}
+                                        onClick={handleCopy}
+                                    />
+                                    {
+                                        (session?.user?.id != data[0].Pin.authorId || !loginedData?.user?.isAdmin) ?
+                                            <></> : <>
+                                                <MdOutlineDelete
+                                                    style={{
+                                                        cursor: 'pointer',
+                                                        padding: 3,
+                                                        fontSize: 28,
+                                                    }}
+                                                    onClick={handleDelete}
+                                                />
+                                                <RiEditBoxFill
+                                                    style={{
+                                                        cursor: 'pointer',
+                                                        padding: 3,
+                                                        fontSize: 28,
+                                                    }}
+                                                    onClick={handleEdit}
+                                                />
+                                            </>
+                                    }
+                                </Box>
                                 <Button
                                     sx={[styles.saveBtn, {
                                         position: 'static',
@@ -264,8 +363,8 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
                                         >
                                             <Link
                                                 style={{
-                                                    display:'flex',
-                                                    alignItems:'center'
+                                                    display: 'flex',
+                                                    alignItems: 'center'
                                                 }}
                                                 href={`/Profile/${data[0]?.user?.id}`}
                                             >
@@ -274,16 +373,20 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
                                                     (data[0]?.user?.isAdmin) ?
                                                         <>
                                                             <MdVerifiedUser
-                                                                style={{color:'rgb(0, 149, 246)',
-                                                                fill:'rgb(0, 149, 246)',
-                                                                margin:'0 1px',
-                                                                fontSize:'18px'}}
+                                                                style={{
+                                                                    color: 'rgb(0, 149, 246)',
+                                                                    fill: 'rgb(0, 149, 246)',
+                                                                    margin: '0 1px',
+                                                                    fontSize: '18px'
+                                                                }}
                                                             />
                                                             <MdVerified
-                                                                style={{color:'rgb(0, 149, 246)',
-                                                                fill:'rgb(0, 149, 246)',
-                                                                margin:'0 1px',
-                                                                fontSize:'18px'}}
+                                                                style={{
+                                                                    color: 'rgb(0, 149, 246)',
+                                                                    fill: 'rgb(0, 149, 246)',
+                                                                    margin: '0 1px',
+                                                                    fontSize: '18px'
+                                                                }}
                                                             />
                                                         </> : ''
 
@@ -388,6 +491,18 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
                     </Box>
                 </Box>
             </Box>
+            <ModalStructure
+                setOpen={setOpen}
+                open={open}
+            >
+                <EditForm
+                    Data={data[0].Pin as Post}
+                    setOpen={setOpen}
+                />
+                {/* <Form
+                    img={item.image}
+                /> */}
+            </ModalStructure>
         </>
     )
 }

@@ -6,14 +6,16 @@ import Link from 'next/link';
 import React from 'react'
 import ModalStructure from './Modal';
 import EditForm from './EditForm';
-import { savePost } from '@/utils/FetchFromApi';
+import { deletePin, savePost } from '@/utils/FetchFromApi';
 import { useSession } from 'next-auth/react';
 
 const ImageCard = (
     {
-        item
+        item,
+        fetchData
     }: {
-        item: Post
+        item: Post,
+        fetchData?: () => Promise<void>
     }
 ) => {
     const { data: session } = useSession() as Data
@@ -46,8 +48,11 @@ const ImageCard = (
         setOpen(true)
         console.log(FormData)
     }
-    const handleDelete = () => {
-        console.log('handleDelete!')
+    const handleDelete = async () => {
+        await deletePin(item._id)
+        if(fetchData){
+            await fetchData()
+        }
     }
     return (
         <Box sx={{ position: 'relative' }}
@@ -132,6 +137,7 @@ const ImageCard = (
                 <EditForm
                     Data={item}
                     setOpen={setOpen}
+                    fetchData={fetchData}
                 />
                 {/* <Form
                     img={item.image}

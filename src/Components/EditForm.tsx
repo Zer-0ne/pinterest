@@ -11,10 +11,12 @@ type ChangedValues = {
 const EditForm = (
     {
         Data,
-        setOpen
+        setOpen,
+        fetchData
     }: {
         Data: Post,
         setOpen: React.Dispatch<React.SetStateAction<boolean>>,
+        fetchData?: () => Promise<void>
     }
 ) => {
     const { data: session } = useSession() as Data
@@ -61,7 +63,10 @@ const EditForm = (
             console.log(changedValues)
             if (session?.user?.id === Data.authorId || session?.user?.isAdmin) {
                 const response = await editPin(Data._id, changedValues);
-                console.log(response)
+                if (fetchData) {
+                    fetchData()
+                }
+                setOpen(false)
                 return response;
             }
             throw new Error('You are not authorized to perform this action');
@@ -73,9 +78,10 @@ const EditForm = (
         <>
             <form onSubmit={handleSubmit}>
                 <Box
-                    sx={[styles.displayFlex, styles.flexWrap, styles.justifyCenter, styles.alignItemCenter, styles.flex1, { p: 2,
-                        maxHeight:'80vh',
-                        overflow:'auto'
+                    sx={[styles.displayFlex, styles.flexWrap, styles.justifyCenter, styles.alignItemCenter, styles.flex1, {
+                        p: 2,
+                        maxHeight: '80vh',
+                        overflow: 'auto'
                     }]}
                 >
 
