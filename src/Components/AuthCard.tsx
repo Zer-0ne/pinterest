@@ -3,6 +3,7 @@ import { styles } from '@/utils/styles';
 import { Avatar, Backdrop, Box, Button, Fade, Input, Modal, Typography } from '@mui/material';
 import React, { useState } from 'react'
 import { signIn, signOut, useSession, } from 'next-auth/react';
+import { toast } from 'react-toastify';
 export interface FormData {
     [key: string]: string;
 }
@@ -15,6 +16,7 @@ const AuthCard = () => {
     const [login, setLogin] = useState(true);
     const [data, setData] = useState<FormData>({})
     const [otp, setOtp] = useState(false)
+    const [disabledBtn, setDisabledBtn] = useState(false)
     const [otpValid, setOtpValid] = useState(false)
     const inputRef = React.useRef<HTMLDivElement>(null)
     React.useEffect(() => {
@@ -57,6 +59,7 @@ const AuthCard = () => {
     }
     // console.log(data)
     const handleSignUp = async (e: any) => {
+        setDisabledBtn(true)
         e.preventDefault();
         const {
             name,
@@ -67,8 +70,16 @@ const AuthCard = () => {
             adminPassword,
             image
         } = data
+        const id = toast.loading("Please wait...")
         if (!name || !username || !email || !otp || !password || !adminPassword || !image) {
-            alert('fill required feilds')
+            toast.update(id, {
+                render: "fill required feilds", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+            setDisabledBtn(false)
             return
         }
         try {
@@ -89,11 +100,34 @@ const AuthCard = () => {
             });
             if (response.ok) {
                 const responseData = await response.json()
+                toast.update(id, {
+                    render: responseData.message, type: "success", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                setDisabledBtn(false)
                 console.log(responseData)
             } else {
-                console.error('Failed to fetch data')
+                toast.update(id, {
+                    render: "Something went wrong", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                setDisabledBtn(false)
             }
         } catch (error) {
+            toast.update(id, {
+                render: "Something went wrong", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+            setDisabledBtn(false)
             console.log(error)
         }
     }
@@ -103,8 +137,15 @@ const AuthCard = () => {
         const {
             email,
         } = data;
+        const id = toast.loading("Please wait...")
         if (!email) {
-            alert('fill required feilds')
+            toast.update(id, {
+                render: "fill required feilds", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
             return
         }
         try {
@@ -117,25 +158,57 @@ const AuthCard = () => {
             if (response.ok) {
                 const responseData = await response.json()
                 console.log(responseData)
+                toast.update(id, {
+                    render: responseData.message, type: "success", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
                 // setOtpValid(true)
             } else {
                 console.error('Failed to send otp')
+                toast.update(id, {
+                    render: "Something went wrong", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+
                 // setOtpValid(false)
             }
         } catch (error) {
             console.log(error)
+            toast.update(id, {
+                render: "Something went wrong", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+            setDisabledBtn(false)
         }
     }
 
     const handleLogin = async (e: any) => {
+        setDisabledBtn(true)
         e.preventDefault();
+        const id = toast.loading("Please wait...")
         try {
             const {
                 username,
                 password
             } = data
             if (!username || !password) {
-                alert('fill required feilds')
+                toast.update(id, {
+                    render: "fill required feilds", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                setDisabledBtn(false)
                 return
             }
             await signIn('credentials', {
@@ -144,13 +217,37 @@ const AuthCard = () => {
                 password
             })
             if (session) {
-                console.log('User is logged in:', session);
+                toast.update(id, {
+                    render: 'login successfully', type: "success", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                setDisabledBtn(false)
+                console.log('User is logged in');
             } else {
                 console.log('User is not logged in');
+                toast.update(id, {
+                    render: "Wrong Credentials", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                setDisabledBtn(false)
             }
 
         } catch (error: any) {
             console.log(error.message)
+            toast.update(id, {
+                render: "Something went wrong", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+            setDisabledBtn(false)
         }
         // setOpen(false)
     }
@@ -315,9 +412,9 @@ const AuthCard = () => {
                                         }]}
                                         disabled={!login ?
                                             !otpValid ?
-                                                true :
+                                                disabledBtn :
                                                 false :
-                                            false}
+                                            disabledBtn}
                                         type='submit'
                                     >{login ? 'login' : 'signup'}</Button>
                                 </Box>
