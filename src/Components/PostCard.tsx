@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import Image from 'next/image'
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { BiLink } from 'react-icons/bi';
 import { RiEditBoxFill } from 'react-icons/ri';
 import Comment from './Comment';
@@ -131,14 +131,21 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
         await deletePin(data[0].Pin._id)
     }
 
-
-    // handle edit 
-    const handleEdit = async () => {
+    const SessionUser = async () => {
         if (session && session.user) {
-            const id = toast.loading("Please wait...")
             const loginUser = await singleUser(session.user.id)
             setLoginedData(loginUser)
-            if (session.user.id != data[0].Pin.authorId || !loginUser.user.isAdmin) {
+        }
+    }
+
+    useEffect(() => {
+        SessionUser()
+    }, [session])
+    // handle edit 
+    const handleEdit = async () => {
+        const id = toast.loading("Please wait...")
+        if (session && session.user) {
+            if (session.user.id != data[0].Pin.authorId || loginedData?.user.isAdmin != true) {
                 toast.update(id, {
                     render: "You are Not Authorized", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
                     pauseOnHover: true,
@@ -160,6 +167,13 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
             });
             return <AuthCard />
         }
+        toast.update(id, {
+            render: "please edit your pins", type: "info", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        });
         setOpen(true)
     }
 
@@ -268,8 +282,8 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
                                         onClick={handleCopy}
                                     />
                                     {
-                                        (session?.user?.id != data[0].Pin.authorId || !loginedData?.user?.isAdmin) ?
-                                            <></> : <>
+                                        (session?.user?.id === data[0].Pin.authorId || loginedData?.user?.isAdmin) ?
+                                            <>
                                                 <MdOutlineDelete
                                                     style={{
                                                         cursor: 'pointer',
@@ -286,7 +300,8 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
                                                     }}
                                                     onClick={handleEdit}
                                                 />
-                                            </>
+
+                                            </> : <></>
                                     }
                                 </Box>
                                 <Button

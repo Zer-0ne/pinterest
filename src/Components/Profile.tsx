@@ -9,8 +9,12 @@ import { Data, Post, saveCreateBtn } from '@/utils/constant'
 import { MdVerified, MdVerifiedUser } from "react-icons/md";
 import { FiLogIn, FiLogOut } from "react-icons/fi";
 import Loading from './Loading'
+import { toast } from 'react-toastify'
 const Profile: React.FC<Data> = ({ data }) => {
     const { data: session, status: sessionStatus } = useSession() as Data;
+    if (sessionStatus === 'loading') {
+        return <Loading />;
+    }
     const [isCreate, setIsCreate] = React.useState('create')
     const [Data, setData] = React.useState<Post[]>([])
     const fetchData = async () => {
@@ -43,9 +47,9 @@ const Profile: React.FC<Data> = ({ data }) => {
         }
     }
     React.useEffect(() => {
-        if (sessionStatus === 'authenticated') {
-            fetchData();
-        }
+        // if (sessionStatus === 'authenticated') {
+        fetchData();
+        // }
         // const interval = setInterval(fetchData, 300000);
         // return () => clearInterval(interval);
     }, [data])
@@ -107,23 +111,19 @@ const Profile: React.FC<Data> = ({ data }) => {
     // const isFollowing = session?.user?.followings?.some((follow: any) => follow.userId.toString() === data?.user?.id);
     // console.log(session?.user?.followings)
 
-    if (sessionStatus === 'loading') {
-        // Session is still being fetched, show a loading state or spinner
-        if (!data?.user) {
-            return <Loading />;
-        }
-        if (!Data) {
-            return <Loading />;
-        }
+
+    if (!Data.length) {
         return <Loading />;
+
     }
 
-    if (session?.user?.id === data?.user?.id) {
-        if (sessionStatus != 'authenticated') {
-            return <AuthCard />;
-            // User is not authenticated, show login/signup component
-        }
-    }
+    // if (data && session?.user?.id === data.user?.id) {
+    //     console.log('hi')
+    //     if (sessionStatus != 'authenticated') {
+    //         return <AuthCard />;
+    //         // User is not authenticated, show login/signup component
+    //     }
+    // }
     return (
         <Box
             sx={[
@@ -143,25 +143,35 @@ const Profile: React.FC<Data> = ({ data }) => {
                     (sessionStatus != 'authenticated') ?
                         <FiLogIn
                             style={{
-                                color:'#d5d5d57d',
-                                position:'absolute',
-                                top:100,
-                                right:60,
-                                cursor:"pointer",
-                                zIndex:10
+                                color: '#d5d5d57d',
+                                position: 'absolute',
+                                top: 100,
+                                right: 60,
+                                cursor: "pointer",
+                                zIndex: 10
                             }}
                             onClick={() => (<AuthCard />)}
                         /> :
                         <FiLogOut
                             style={{
-                                color:'#d5d5d57d',
-                                position:'absolute',
-                                top:100,
-                                right:60,
-                                cursor:"pointer",
-                                zIndex:10
+                                color: '#d5d5d57d',
+                                position: 'absolute',
+                                top: 100,
+                                right: 60,
+                                cursor: "pointer",
+                                zIndex: 10
                             }}
-                            onClick={() => signOut()}
+                            onClick={async () => {
+                                const id = toast.loading("logging out...")
+                                await signOut();
+                                toast.update(id, {
+                                    render: 'logout successfully', type: "success", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                    theme: "dark",
+                                });
+                            }}
                         /> :
                     <></>}
 

@@ -216,27 +216,15 @@ const AuthCard = () => {
                 username,
                 password
             })
-            if (session) {
-                toast.update(id, {
-                    render: 'login successfully', type: "success", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "dark",
-                });
-                setDisabledBtn(false)
-                console.log('User is logged in');
-            } else {
-                console.log('User is not logged in');
-                toast.update(id, {
-                    render: "Wrong Credentials", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "dark",
-                });
-                setDisabledBtn(false)
-            }
+            toast.update(id, {
+                render: 'login successfully', type: "success", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+            setDisabledBtn(false)
+            console.log('User is logged in');
 
         } catch (error: any) {
             console.log(error.message)

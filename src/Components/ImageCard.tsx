@@ -1,4 +1,4 @@
-import { Data, Post, moreOptionsBtn } from '@/utils/constant';
+import { Data, Post, SessionsProps, moreOptionsBtn } from '@/utils/constant';
 import { styles } from '@/utils/styles';
 import { Box, Button } from '@mui/material';
 import Image from 'next/image';
@@ -6,7 +6,7 @@ import Link from 'next/link';
 import React from 'react'
 import ModalStructure from './Modal';
 import EditForm from './EditForm';
-import { deletePin, savePost } from '@/utils/FetchFromApi';
+import { deletePin, savePost, singleUser } from '@/utils/FetchFromApi';
 import { useSession } from 'next-auth/react';
 
 const ImageCard = (
@@ -21,8 +21,20 @@ const ImageCard = (
     const { data: session } = useSession() as Data
     const [isHovered, setIsHovered] = React.useState<Boolean>(false);
     const [open, setOpen] = React.useState(false)
+    const [loginedData, setLoginedData] = React.useState<SessionsProps>()
     const [FormData, setFormData] = React.useState<Post[]>()
     // console.log(item)
+
+    const SessionUser = async () => {
+        if (session && session.user) {
+            const loginUser = await singleUser(session.user.id)
+            setLoginedData(loginUser)
+        }
+    }
+
+    React.useEffect(() => {
+        SessionUser()
+    }, [session])
 
     // handle save post 
     const handleSave = async () => {
@@ -50,7 +62,7 @@ const ImageCard = (
     }
     const handleDelete = async () => {
         await deletePin(item._id)
-        if(fetchData){
+        if (fetchData) {
             await fetchData()
         }
     }
@@ -121,7 +133,7 @@ const ImageCard = (
                                 transition: 'all .3s ease-in-out',
                                 m: '0px 8px',
                                 fontWeight: 'bold',
-                                display: (['Edit', 'Delete'].includes(btn.name)) ? (session?.user?.id === item.authorId || session?.user?.isAdmin) ? 'inline' : 'none' : 'inline',
+                                display: (['Edit', 'Delete'].includes(btn.name)) ? (session?.user?.id === item.authorId || loginedData?.user?.isAdmin) ? 'inline' : 'none' : 'inline',
                             }]}
                         >
                             {btn.icon}

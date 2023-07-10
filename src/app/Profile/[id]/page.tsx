@@ -5,6 +5,7 @@ import React from 'react'
 import { useParams } from 'next/navigation'
 import { Data, User } from '@/utils/constant'
 import { singleUser } from '@/utils/FetchFromApi'
+import Loading from '@/Components/Loading'
 
 const page = () => {
     const { id } = useParams()
@@ -28,6 +29,9 @@ const page = () => {
         const interval = setInterval(fetchData, 300000);
         return () => clearInterval(interval);
     }, [])
+    if(!data){
+        return <Loading/>;
+    }
     return (
         <>
             <Body
