@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Data, Post, inputForm } from '../utils/constant';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
-import { editPin } from '@/utils/FetchFromApi';
+import { editPin, singleUser } from '@/utils/FetchFromApi';
 type ChangedValues = {
     [key: string]: string;
 };
@@ -16,7 +16,7 @@ const EditForm = (
     }: {
         Data: Post,
         setOpen: React.Dispatch<React.SetStateAction<boolean>>,
-        fetchData?: () => Promise<void>
+        fetchData: () => Promise<void>
     }
 ) => {
     const { data: session } = useSession() as Data
@@ -29,7 +29,6 @@ const EditForm = (
             if (!event.target.files) return;
             const file: File = event?.target.files[0];
             const reader = new FileReader();
-            console.log('hi')
             reader.onload = (e) => {
                 if (e.target && e.target.result) {
                     const dataURL = e.target.result.toString();
@@ -54,22 +53,26 @@ const EditForm = (
     const handleSubmit = async (e: any) => {
         e.preventDefault();
         try {
-            const changedValues = Object.entries(inputValues)
-                .filter(([key, value]) => value !== Data[key])
-                .reduce((obj, [key, value]) => {
-                    obj[key] = value;
-                    return obj;
-                }, {} as ChangedValues);
-            console.log(changedValues)
-            if (session?.user?.id === Data.authorId || session?.user?.isAdmin) {
-                const response = await editPin(Data._id, changedValues);
-                if (fetchData) {
+            if (session && session.user) {
+
+                const sessionUser = await singleUser(session.user.id)
+                const changedValues = Object.entries(inputValues)
+                    .filter(([key, value]) => value !== Data[key])
+                    .reduce((obj, [key, value]) => {
+                        obj[key] = value;
+                        return obj;
+                    }, {} as ChangedValues);
+                console.log(changedValues)
+                if (session?.user?.id === Data.authorId || sessionUser?.user?.isAdmin) {
+                    const response = await editPin(Data._id, changedValues);
+                    // if (fetchData) {
                     fetchData()
+                    // }
+                    setOpen(false)
+                    return response;
                 }
-                setOpen(false)
-                return response;
+                throw new Error('You are not authorized to perform this action');
             }
-            throw new Error('You are not authorized to perform this action');
         } catch (error) {
             console.log(error)
         }

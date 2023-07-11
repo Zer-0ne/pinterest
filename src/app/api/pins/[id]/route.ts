@@ -45,24 +45,24 @@ export const GET = async (request: NextRequest, { params }: any) => {
     });
 }
 export const DELETE = async (request: NextRequest, { params }: any) => {
-    const session = await getServerSession(AuthOptions) as Routes
+    const session = await getServerSession(AuthOptions) as SessionsProps
     if (!session) {
         return NextResponse.json({ message: 'please login first' })
     }
     try {
         await connect()
+        const SessionUser = await User.findById(session.user.id)
         const id = params.id
         const deletePin = await Pins.findByIdAndDelete(id)
         if (!deletePin) {
             return NextResponse.json({ message: 'Pin not found!' })
         }
-        if (deletePin.authorId.toString() !== session.user?.id) {
-            return NextResponse.json({ message: 'Unauthorized' });
+        if (deletePin.authorId.toString() === session.user?.id || SessionUser.isAdmin) {
+            const storageRef = ref(storage, deletePin.imageid);
+            await deleteObject(storageRef);
+            return NextResponse.json({ message: 'Pin deleted seccussfully' })
         }
-        const storageRef = ref(storage, deletePin.imageid);
-        await deleteObject(storageRef);
-
-        return NextResponse.json({ message: 'Pin deleted seccussfully' })
+        return NextResponse.json({ message: 'Unauthorized' });
     } catch (error: any) {
         return NextResponse.json({ message: error.message })
     }
@@ -76,6 +76,7 @@ export const PUT = async (request: NextRequest, { params }: any) => {
     }
     try {
         await connect()
+        const SessionUser = await User.findById(session.user.id)
         const {
             title,
             Description,
@@ -85,21 +86,32 @@ export const PUT = async (request: NextRequest, { params }: any) => {
         const { id } = params
 
         const post = await Pins.findById(id);
-        if (post?.authorId.toString() !== session.user?.id) {
-            return NextResponse.json({ message: 'Unauthorized' });
-        }
-
-        if (image) {
-            const storageRef = ref(storage, post.imageid);
-            await deleteObject(storageRef);
-            const postUUID = uuidv4();
-            const snapshot = await uploadString(storageRef, image, 'data_url');
-            const imageURL = await getDownloadURL(snapshot.ref);
+        if (post?.authorId.toString() == session.user?.id || SessionUser.isAdmin) {
+            if (image) {
+                const storageRef = ref(storage, post.imageid);
+                await deleteObject(storageRef);
+                const postUUID = uuidv4();
+                const snapshot = await uploadString(storageRef, image, 'data_url');
+                const imageURL = await getDownloadURL(snapshot.ref);
+                const updatedPin = {
+                    title,
+                    Description,
+                    image: imageURL,
+                    imageid: postUUID,
+                    tag,
+                }
+                const updatePins = await Pins.findByIdAndUpdate(
+                    id,
+                    { $set: updatedPin },
+                    { new: true }
+                )
+                if (!updatePins) {
+                    return NextResponse.json({ message: 'Pins not found' })
+                }
+            }
             const updatedPin = {
                 title,
                 Description,
-                image: imageURL,
-                imageid: postUUID,
                 tag,
             }
             const updatePins = await Pins.findByIdAndUpdate(
@@ -110,21 +122,9 @@ export const PUT = async (request: NextRequest, { params }: any) => {
             if (!updatePins) {
                 return NextResponse.json({ message: 'Pins not found' })
             }
+            return NextResponse.json({ message: 'Pins updated successfully' })
         }
-        const updatedPin = {
-            title,
-            Description,
-            tag,
-        }
-        const updatePins = await Pins.findByIdAndUpdate(
-            id,
-            { $set: updatedPin },
-            { new: true }
-        )
-        if (!updatePins) {
-            return NextResponse.json({ message: 'Pins not found' })
-        }
-        return NextResponse.json({ message: 'Pins updated successfully' })
+        return NextResponse.json({ message: 'Unauthorized' });
         // const
     } catch (error: any) {
         return NextResponse.json({ message: error.message })

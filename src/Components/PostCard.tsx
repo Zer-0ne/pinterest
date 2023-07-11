@@ -107,15 +107,8 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
         if (session && session.user) {
             const loginUser = await singleUser(session.user.id)
             setLoginedData(loginUser)
-            if (session?.user?.id != data[0].Pin.authorId || loginUser.user.isAdmin) {
-                toast.update(id, {
-                    render: "You are Not Authorized", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "dark",
-                });
-                return
+            if (session?.user?.id === data[0].Pin.authorId || loginUser.user.isAdmin) {
+                await deletePin(data[0].Pin._id)
             }
         }
         if (sessionStatus != 'authenticated') {
@@ -128,7 +121,14 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
             });
             return <AuthCard />
         }
-        await deletePin(data[0].Pin._id)
+        toast.update(id, {
+            render: "You are Not Authorized", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        });
+        return
     }
 
     const SessionUser = async () => {
@@ -144,18 +144,20 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
     // handle edit 
     const handleEdit = async () => {
         const id = toast.loading("Please wait...")
-        if (session && session.user) {
-            if (session.user.id != data[0].Pin.authorId || loginedData?.user.isAdmin != true) {
-                toast.update(id, {
-                    render: "You are Not Authorized", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "dark",
-                });
-                return
-            }
+        // if (session && session.user && loginedData) {
+
+        if (session?.user?.id === data[0].Pin.authorId || loginedData?.user.isAdmin) {
+            toast.update(id, {
+                render: "please edit your pins", type: "info", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+            setOpen(true)
+            return
         }
+        // }
         if (sessionStatus != 'authenticated') {
             const id = toast.loading("Please wait...")
             toast.update(id, {
@@ -168,13 +170,14 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
             return <AuthCard />
         }
         toast.update(id, {
-            render: "please edit your pins", type: "info", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+            render: "You are Not Authorized", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
             theme: "dark",
         });
-        setOpen(true)
+        return
+
     }
 
     if (sessionStatus === 'loading') {
@@ -454,7 +457,7 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
                                             <Comment
                                                 key={index}
                                                 item={item}
-                                                authorId={data[0].Pin.authorId}
+                                                authorId={data[0].Pin.authorId===data[0].user.id}
                                                 fetchdata={fetchdata}
                                             />
                                         )
@@ -513,6 +516,7 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
                 <EditForm
                     Data={data[0].Pin as Post}
                     setOpen={setOpen}
+                    fetchData={fetchdata}
                 />
                 {/* <Form
                     img={item.image}

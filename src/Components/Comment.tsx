@@ -13,7 +13,7 @@ const Comment = (
         fetchdata
     }: {
         item: CommentProps,
-        authorId: string,
+        authorId: Boolean,
         fetchdata:() => Promise<void>
     }
 ) => {
@@ -47,6 +47,7 @@ const Comment = (
                 await deleteComment(item._id);
                 await fetchdata()
             }
+            return
         } catch (error) {
             console.log(error)
         }

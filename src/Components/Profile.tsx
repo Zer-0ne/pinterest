@@ -17,6 +17,7 @@ const Profile: React.FC<Data> = ({ data }) => {
     }
     const [isCreate, setIsCreate] = React.useState('create')
     const [Data, setData] = React.useState<Post[]>([])
+    const [isEmpty, setIsEmpty] = React.useState<Boolean>(false)
     const fetchData = async () => {
         try {
             if (data && data.user) {
@@ -37,6 +38,9 @@ const Profile: React.FC<Data> = ({ data }) => {
                         // responseData
                         ...sortedData?.reverse()
                     ]));
+                    if(!Data.length){
+                        setIsEmpty(true)
+                    }
                 } else {
                     console.error('Failed to fetch data');
                 }
@@ -112,9 +116,14 @@ const Profile: React.FC<Data> = ({ data }) => {
     // console.log(session?.user?.followings)
 
 
-    if (!Data.length) {
+    if (!Data) {
         return <Loading />;
 
+    }
+    if(Data){
+        if(!isEmpty){
+            return <Loading/>
+        }
     }
 
     // if (data && session?.user?.id === data.user?.id) {

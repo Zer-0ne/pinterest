@@ -1,4 +1,4 @@
-import { logIn, signUp } from '@/utils/constant';
+import { Data, logIn, signUp } from '@/utils/constant';
 import { styles } from '@/utils/styles';
 import { Avatar, Backdrop, Box, Button, Fade, Input, Modal, Typography } from '@mui/material';
 import React, { useState } from 'react'
@@ -11,7 +11,7 @@ export interface Auth {
     onSubmit?: React.FormEventHandler<HTMLFormElement> | undefined;
 }
 const AuthCard = () => {
-    const { data: session } = useSession();
+    const { data: session, status: sessionStatus } = useSession() as Data;
     const [open, setOpen] = useState(false)
     const [login, setLogin] = useState(true);
     const [data, setData] = useState<FormData>({})
@@ -211,11 +211,25 @@ const AuthCard = () => {
                 setDisabledBtn(false)
                 return
             }
-            await signIn('credentials', {
+            const signin = await signIn('credentials', {
                 redirect: false,
                 username,
                 password
             })
+            console.log(signin)
+            
+            if (signin?.url === null) {
+                toast.update(id, {
+                    render: 'Wrong Credentials', type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                setDisabledBtn(false)
+                return
+            }
+            // if (sessionStatus!='loading' &&sessionStatus === 'authenticated') {
             toast.update(id, {
                 render: 'login successfully', type: "success", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
                 pauseOnHover: true,
@@ -224,7 +238,8 @@ const AuthCard = () => {
                 theme: "dark",
             });
             setDisabledBtn(false)
-            console.log('User is logged in');
+            return
+            // }
 
         } catch (error: any) {
             console.log(error.message)
