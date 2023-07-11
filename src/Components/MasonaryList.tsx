@@ -9,7 +9,7 @@ import ImageCard from './ImageCard';
 export interface MasonryListProps {
     size?: any;
     data: Post[];
-    fetchData?: () => Promise<void>
+    fetchData: () => Promise<void>
     // Data:Post[];
 }
 

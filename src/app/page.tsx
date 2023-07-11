@@ -43,6 +43,7 @@ export default function Home() {
   return (
     <>
       <MasonryList
+        fetchData={fetchData}
         data={data}
       />
     </>
