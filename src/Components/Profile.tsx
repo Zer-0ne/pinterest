@@ -342,6 +342,7 @@ const Profile: React.FC<Data> = ({ data }) => {
                     <MasonryList
                         size={2}
                         data={Data}
+                        fetchData={fetchData}
                     />
             }
 
