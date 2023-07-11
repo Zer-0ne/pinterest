@@ -15,7 +15,7 @@ const ImageCard = (
         fetchData
     }: {
         item: Post,
-        fetchData?: () => Promise<void>
+        fetchData: () => Promise<void>
     }
 ) => {
     const { data: session } = useSession() as Data

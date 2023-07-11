@@ -216,8 +216,6 @@ const AuthCard = () => {
                 username,
                 password
             })
-            console.log(signin)
-            
             if (signin?.url === null) {
                 toast.update(id, {
                     render: 'Wrong Credentials', type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
@@ -229,7 +227,6 @@ const AuthCard = () => {
                 setDisabledBtn(false)
                 return
             }
-            // if (sessionStatus!='loading' &&sessionStatus === 'authenticated') {
             toast.update(id, {
                 render: 'login successfully', type: "success", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
                 pauseOnHover: true,
@@ -239,7 +236,6 @@ const AuthCard = () => {
             });
             setDisabledBtn(false)
             return
-            // }
 
         } catch (error: any) {
             console.log(error.message)
