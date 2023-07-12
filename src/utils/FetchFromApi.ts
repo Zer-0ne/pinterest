@@ -1,4 +1,5 @@
 import { toast } from "react-toastify";
+import { SessionsProps } from "./constant";
 
 // 'use server'
 interface FetchFromApiProps {
@@ -214,26 +215,42 @@ export const newComment = async (data: object) => {
         });
     }
 }
-export const deleteComment = async (_id: string) => {
+export const deleteComment = async (
+    _id: string,
+    authorId: string,
+    itemUserId: string,
+    SessionUser: SessionsProps
+) => {
     const id = toast.loading("Please wait...")
     try {
-        const response = await fetch(`/api/comment/${_id}`, {
-            method: 'DELETE',
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
-        if (response.ok) {
-            const responseData = await response.json()
-            toast.update(id, {
-                render: responseData.message, type: "success", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-            });
-            return responseData
+        if (authorId === SessionUser?.user.id || itemUserId === SessionUser?.user.id || SessionUser?.user.isAdmin) {
+
+            const response = await fetch(`/api/comment/${_id}`, {
+                method: 'DELETE',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+            if (response.ok) {
+                const responseData = await response.json()
+                toast.update(id, {
+                    render: responseData.message, type: "success", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                return responseData
+            }
         }
+        toast.update(id, {
+            render: 'Unauthorized', type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        });
+        return
     } catch (error) {
         console.log(error)
         toast.update(id, {

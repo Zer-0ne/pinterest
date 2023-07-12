@@ -119,7 +119,7 @@ const Form: React.FC<Form> = ({
                                 <Button
                                     sx={[styles.saveBtn, {
                                         m: '0 0 0 2rem ',
-                                        position: 'static',
+                                        position: 'relative',
                                         backgroundColor: 'white !important',
                                         color: 'black',
                                         borderRadius: 4,
@@ -129,7 +129,7 @@ const Form: React.FC<Form> = ({
                                 <Button
                                     sx={[styles.saveBtn, {
                                         m: '0 0 0 2rem ',
-                                        position: 'static',
+                                        position: 'relative',
                                         borderRadius: 4
                                     }]}
                                     type="submit"

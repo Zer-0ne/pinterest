@@ -156,9 +156,6 @@ export const styles = {
     crossBtn:{
         color:'white',
         backgroundColor:'transparent !important',
-        position:'absolute',
-        left:0,
-        top:0,
         padding:3,
         height:0,
         width:0,

@@ -162,7 +162,7 @@ const EditForm = (
                             <Button
                                 sx={[styles.roundedBtn, {
                                     m: '0 0 0 2rem ',
-                                    position: 'static',
+                                    position: 'relative',
                                     borderRadius: 4,
                                 }]}
                                 onClick={() => setOpen(false)}
@@ -170,7 +170,7 @@ const EditForm = (
                             <Button
                                 sx={[styles.saveBtn, {
                                     m: '0 0 0 2rem ',
-                                    position: 'static',
+                                    position: 'relative',
                                     borderRadius: 4
                                 }]}
                                 type="submit"

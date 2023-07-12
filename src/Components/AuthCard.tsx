@@ -273,6 +273,7 @@ const AuthCard = () => {
                         <Button
                             sx={[styles.roundedBtn, styles.crossBtn, {
                                 m: 1,
+                                position: 'relative',
                                 right: 0,
                             }]}
                             onClick={() => setOpen(false)}
@@ -391,7 +392,7 @@ const AuthCard = () => {
 
                                     <Button
                                         sx={[styles.saveBtn, {
-                                            position: 'static',
+                                            position: 'relative',
                                             alignSelf: 'start',
                                             borderRadius: 2,
                                             margin: '15px 0 0 0',
@@ -403,7 +404,7 @@ const AuthCard = () => {
                                     >{'send otp'}</Button>
                                     <Button
                                         sx={[styles.saveBtn, {
-                                            position: 'static',
+                                            position: 'relative',
                                             alignSelf: 'start',
                                             borderRadius: 2,
                                             margin: '15px 0 0 0',

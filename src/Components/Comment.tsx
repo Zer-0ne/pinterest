@@ -1,11 +1,12 @@
 import { deleteComment, singleUser } from '@/utils/FetchFromApi';
-import { CommentProps, Data } from '@/utils/constant';
+import { CommentProps, Data, SessionsProps } from '@/utils/constant';
 import { styles } from '@/utils/styles'
 import { Avatar, Box, Button, Typography } from '@mui/material'
 import { User } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import React from 'react'
 import { MdOutlineDelete } from "react-icons/md";
+import { toast } from 'react-toastify';
 const Comment = (
     {
         item,
@@ -13,8 +14,8 @@ const Comment = (
         fetchdata
     }: {
         item: CommentProps,
-        authorId: Boolean,
-        fetchdata:() => Promise<void>
+        authorId: string,
+        fetchdata: () => Promise<void>
     }
 ) => {
     // post author
@@ -22,11 +23,11 @@ const Comment = (
     // comment userId
     const { data: session } = useSession() as Data
     const [data, setData] = React.useState<User>()
-    const [SessionUser, setSessionUser] = React.useState<Data>()
+    const [SessionUser, setSessionUser] = React.useState<SessionsProps>()
     const fetchData = async () => {
         try {
             const response = await singleUser(item.userId)
-            if(session && session.user){
+            if (session && session.user) {
                 const sessionUserResponse = await singleUser(session?.user?.id)
                 setSessionUser(sessionUserResponse)
             }
@@ -39,15 +40,15 @@ const Comment = (
     React.useEffect(() => {
         fetchData()
     }, [item])
-
     const handleDelete = async () => {
         try {
-            console.log(authorId, item.userId, SessionUser)
-            if (authorId || item.userId === session?.user?.id || session?.user?.isAdmin) {
-                await deleteComment(item._id);
+            if (SessionUser) {
+
+                await deleteComment(item._id, authorId, item.userId, SessionUser);
                 await fetchdata()
+                return
             }
-            return
+
         } catch (error) {
             console.log(error)
         }
@@ -105,16 +106,16 @@ const Comment = (
                     {item.comment}
                 </Typography>
                 {
-                    (authorId || item.userId === session?.user?.id || session?.user?.isAdmin) ?
+                    (authorId === session?.user?.id || item.userId === session?.user?.id || SessionUser?.user?.isAdmin) ?
                         // <Button >
-                            <MdOutlineDelete
-                                style={{
-                                    justifySelf: 'self-end',
-                                    cursor: 'pointer'
-                                }}
-                                onClick={handleDelete}
-                            />
-                         :
+                        <MdOutlineDelete
+                            style={{
+                                justifySelf: 'self-end',
+                                cursor: 'pointer'
+                            }}
+                            onClick={handleDelete}
+                        />
+                        :
                         <></>
                 }
             </Box>

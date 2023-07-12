@@ -36,8 +36,7 @@ const ModalStructure = (
                     <Button
                         sx={[styles.roundedBtn, styles.crossBtn, {
                             m: 1,
-                            right: 0,
-                            position:'static',
+                            position:'relative',
                             alignSelf:'start'
                         }]}
                         onClick={() => setOpen(false)}

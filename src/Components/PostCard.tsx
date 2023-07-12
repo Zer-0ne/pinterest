@@ -29,7 +29,9 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
     const { data: session, status: sessionStatus } = useSession() as Data;
     const cardContainerRef = useRef<HTMLDivElement>(null);
     const cardRef = useRef<HTMLDivElement>(null);
-    const [commentData, setCommentData] = React.useState<{ [key: string]: string }>({})
+    const [commentData, setCommentData] = React.useState<{ [key: string]: string }>({
+        comment:''
+    })
     React.useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (cardContainerRef.current &&
@@ -88,7 +90,9 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
                 userId: session?.user?.id,
                 pinId: data[0]?.Pin._id
             })
-            console.log(response)
+            setCommentData({
+                comment:''
+            })
             await fetchdata()
         } catch (error) {
             console.log(error)
@@ -477,7 +481,7 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
                                             <Comment
                                                 key={index}
                                                 item={item}
-                                                authorId={data[0].Pin.authorId === data[0].user.id}
+                                                authorId={data[0].Pin.authorId}
                                                 fetchdata={fetchdata}
                                             />
                                         )
@@ -513,6 +517,7 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
                                         },]}
                                         name='comment'
                                         placeholder='comment'
+                                        value={commentData.comment}
                                         onChange={handleChange}
                                     />
                                     <Button

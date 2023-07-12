@@ -1,23 +1,28 @@
 import { styles } from '@/utils/styles'
-import { Avatar, Box, Button, Typography } from '@mui/material'
-import React from 'react'
+import { Avatar, Box, Button, Paper, Typography } from '@mui/material'
+import React, { useState } from 'react'
 import MasonryList from './MasonaryList'
 import { signOut, useSession } from 'next-auth/react'
 import AuthCard from './AuthCard'
 import { follow, singlePin, singleUser } from '@/utils/FetchFromApi'
-import { Data, Post, saveCreateBtn } from '@/utils/constant'
+import { Data, Post, SessionsProps, saveCreateBtn } from '@/utils/constant'
 import { MdVerified, MdVerifiedUser } from "react-icons/md";
 import { FiLogIn, FiLogOut } from "react-icons/fi";
 import Loading from './Loading'
 import { toast } from 'react-toastify'
+import ModalStructure from './Modal'
+import { User } from 'next-auth'
+import Link from 'next/link'
+import FollowersAccount from './FollowersAccount'
 const Profile: React.FC<Data> = ({ data }) => {
     const { data: session, status: sessionStatus } = useSession() as Data;
     if (sessionStatus === 'loading') {
         return <Loading />;
     }
-    const [isCreate, setIsCreate] = React.useState('create')
-    const [Data, setData] = React.useState<Post[]>([])
-    const [isEmpty, setIsEmpty] = React.useState<Boolean>(false)
+    const [isCreate, setIsCreate] = useState('create')
+    const [open, setOpen] = useState<boolean>(false)
+    const [Data, setData] = useState<Post[]>([])
+    const [isEmpty, setIsEmpty] = useState<Boolean>(false)
     const fetchData = async () => {
         try {
             if (data && data.user) {
@@ -38,7 +43,7 @@ const Profile: React.FC<Data> = ({ data }) => {
                         // responseData
                         ...sortedData?.reverse()
                     ]));
-                    if(!Data.length){
+                    if (!Data.length) {
                         setIsEmpty(true)
                     }
                 } else {
@@ -112,27 +117,15 @@ const Profile: React.FC<Data> = ({ data }) => {
     }
 
 
-    // const isFollowing = session?.user?.followings?.some((follow: any) => follow.userId.toString() === data?.user?.id);
-    // console.log(session?.user?.followings)
-
-
     if (!Data) {
         return <Loading />;
 
     }
-    if(Data){
-        if(!isEmpty){
-            return <Loading/>
+    if (Data) {
+        if (!isEmpty) {
+            return <Loading />
         }
     }
-
-    // if (data && session?.user?.id === data.user?.id) {
-    //     console.log('hi')
-    //     if (sessionStatus != 'authenticated') {
-    //         return <AuthCard />;
-    //         // User is not authenticated, show login/signup component
-    //     }
-    // }
     return (
         <Box
             sx={[
@@ -241,12 +234,12 @@ const Profile: React.FC<Data> = ({ data }) => {
             </Typography>
             <Typography
                 variant='subtitle1'
-                component={`div`}
+                component={`button`}
                 sx={{
                     color: '#ffffff6b',
                 }}
+                onClick={() => setOpen(true)}
             >
-
                 {
                     (data && data.user) ?
                         [0, 1].includes(data.user.followers.length) ?
@@ -267,7 +260,7 @@ const Profile: React.FC<Data> = ({ data }) => {
                 <Button
                     sx={[
                         styles.saveBtn, {
-                            position: 'static !important',
+                            position: 'relative',
                             marginRight: 2,
                             padding: '6px 15px',
                             backgroundColor: '#201c1ca1 !important',
@@ -278,7 +271,7 @@ const Profile: React.FC<Data> = ({ data }) => {
                 <Button
                     sx={[
                         styles.saveBtn, {
-                            position: 'static !important',
+                            position: 'relative',
                             marginRight: 2,
                             padding: '11px 20px',
                             backgroundColor: '#201c1ca1 !important',
@@ -345,6 +338,28 @@ const Profile: React.FC<Data> = ({ data }) => {
                         fetchData={fetchData}
                     />
             }
+            <ModalStructure
+                setOpen={setOpen}
+                open={open}
+            >
+                <Box
+                    sx={[
+                        styles.displayFlex,
+                        styles.FlexColumn,
+                        styles.justifyCenter
+                    ]}
+                >
+                    {/* </Typography> */}
+                    {
+                        data?.user?.followers?.map((item, index) => (
+                            <FollowersAccount
+                                key={index}
+                                item={item}
+                            />
+                        ))
+                    }
+                </Box>
+            </ModalStructure>
 
         </Box>
     )
