@@ -88,9 +88,9 @@ export const PUT = async (request: NextRequest, { params }: any) => {
         const post = await Pins.findById(id);
         if (post?.authorId.toString() == session.user?.id || SessionUser.isAdmin) {
             if (image) {
-                const storageRef = ref(storage, post.imageid);
-                await deleteObject(storageRef);
+                await deleteObject(ref(storage, post.imageid));
                 const postUUID = uuidv4();
+                const storageRef = ref(storage, postUUID);
                 const snapshot = await uploadString(storageRef, image, 'data_url');
                 const imageURL = await getDownloadURL(snapshot.ref);
                 const updatedPin = {

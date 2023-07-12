@@ -223,6 +223,7 @@ export interface PostCardProps {
         comments: [];
         authorId: string;
         tag:string
+        Description:string
     },
     user: User
 }

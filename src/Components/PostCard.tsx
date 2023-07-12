@@ -349,13 +349,32 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
                                     }}
                                 >{data[0]?.user?.name}</Typography>
                             </Box>
-
+                            <Box
+                                sx={{
+                                    m: '2rem 0 0 0 '
+                                }}
+                            >
+                                <Typography
+                                    variant='h4'
+                                    component={`div`}
+                                    sx={{
+                                        fontWeight:'bold'
+                                    }}
+                                >{data[0]?.Pin?.title}</Typography>
+                                <Typography
+                                    variant='body1'
+                                    component={`div`}
+                                    sx={{
+                                        m:'10px 0 0 0 '
+                                    }}
+                                >{data[0]?.Pin?.Description}</Typography>
+                            </Box>
                             <Box
                                 sx={[
                                     styles.displayFlex,
                                     styles.flex1,
                                     styles.alignItemCenter, {
-                                        marginTop: 2.5,
+                                        marginTop: 1.5,
                                         justifyContent: 'space-between'
                                     }
                                 ]}
@@ -375,6 +394,7 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
                                         />
                                     )}
                                     <Box>
+
                                         <Typography
                                             variant='body2'
                                             component={`div`}
@@ -457,7 +477,7 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
                                             <Comment
                                                 key={index}
                                                 item={item}
-                                                authorId={data[0].Pin.authorId===data[0].user.id}
+                                                authorId={data[0].Pin.authorId === data[0].user.id}
                                                 fetchdata={fetchdata}
                                             />
                                         )
