@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google'
 import NextAuthProvider from '@/provider/SessionProvider'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Analytics } from '@vercel/analytics/react';
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
@@ -36,6 +37,7 @@ export default function RootLayout({
             theme="dark"
           />
         </NextAuthProvider>
+        <Analytics />
       </body>
     </html>
   )
