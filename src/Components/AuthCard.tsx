@@ -157,7 +157,6 @@ const AuthCard = () => {
             })
             if (response.ok) {
                 const responseData = await response.json()
-                console.log(responseData)
                 toast.update(id, {
                     render: responseData.message, type: "success", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
                     pauseOnHover: true,

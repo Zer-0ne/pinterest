@@ -58,7 +58,6 @@ const ImageCard = (
     const handleEdit = async () => {
         await setFormData(() => [item])
         setOpen(true)
-        console.log(FormData)
     }
     const handleDelete = async () => {
         await deletePin(item._id)

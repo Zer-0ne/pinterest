@@ -5,20 +5,18 @@ import MasonryList from './MasonaryList'
 import { signOut, useSession } from 'next-auth/react'
 import AuthCard from './AuthCard'
 import { follow, singlePin, singleUser } from '@/utils/FetchFromApi'
-import { Data, Post, SessionsProps, saveCreateBtn } from '@/utils/constant'
+import { Data, Post, saveCreateBtn } from '@/utils/constant'
 import { MdVerified, MdVerifiedUser } from "react-icons/md";
 import { FiLogIn, FiLogOut } from "react-icons/fi";
 import Loading from './Loading'
 import { toast } from 'react-toastify'
 import ModalStructure from './Modal'
-import { User } from 'next-auth'
-import Link from 'next/link'
 import FollowersAccount from './FollowersAccount'
 const Profile: React.FC<Data> = ({ data }) => {
     const { data: session, status: sessionStatus } = useSession() as Data;
-    if (sessionStatus === 'loading') {
-        return <Loading />;
-    }
+    // if (sessionStatus === 'loading') {
+    //     return <Loading />;
+    // }
     const [isCreate, setIsCreate] = useState('create')
     const [open, setOpen] = useState<boolean>(false)
     const [Data, setData] = useState<Post[]>([])
@@ -26,7 +24,7 @@ const Profile: React.FC<Data> = ({ data }) => {
     const fetchData = async () => {
         try {
             if (data && data.user) {
-                const response = await fetch(`/api/pins/user/${data.user?.id}`, {
+                const response = await fetch(`/api/pins/user/${data.user.id}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
@@ -90,7 +88,6 @@ const Profile: React.FC<Data> = ({ data }) => {
                     const savedArray = await SessionData.user.saved;
                     savedArray.map(async (item: any) => {
                         const Pin = await singlePin(item)
-                        console.log(Pin)
                         setData((prev) => [
                             ...prev,
                             Pin
@@ -102,7 +99,6 @@ const Profile: React.FC<Data> = ({ data }) => {
                 const savedArray = await data.user.saved;
                 savedArray.map(async (item: string) => {
                     const Pin = await singlePin(item)
-                    console.log(Pin)
                     setData((prev) => [
                         ...prev,
                         Pin
@@ -349,6 +345,7 @@ const Profile: React.FC<Data> = ({ data }) => {
                         styles.justifyCenter
                     ]}
                 >
+                    Followers
                     {/* </Typography> */}
                     {
                         data?.user?.followers?.map((item, index) => (

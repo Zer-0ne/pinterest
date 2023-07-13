@@ -22,7 +22,6 @@ interface FetchFromApiProps {
 }
 
 export const singleUser = async (_id: string) => {
-    // const id = toast.loading("Please wait...")
     try {
         const response = await fetch(`/api/user/${_id}`, {
             method: 'GET',
@@ -33,31 +32,16 @@ export const singleUser = async (_id: string) => {
         });
         if (response.ok) {
             const responseData = await response.json()
-            // toast.update(id, {
-            //     render: responseData.message, type: "success", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
-            //     pauseOnHover: true,
-            //     draggable: true,
-            //     progress: undefined,
-            //     theme: "dark",
-            // });
             const { data } = await responseData
             return data;
         }
         console.error('failed to fetch')
         return
     } catch (error) {
-        // toast.update(id, {
-        //     render: "Something went wrong", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
-        //     pauseOnHover: true,
-        //     draggable: true,
-        //     progress: undefined,
-        //     theme: "dark",
-        // });
         console.error(error)
     }
 }
 export const singlePin = async (_id: string) => {
-    const id = toast.loading("Please wait...")
     try {
         const response = await fetch(`/api/pins/${_id}`, {
             method: 'GET',
@@ -68,25 +52,12 @@ export const singlePin = async (_id: string) => {
         });
         if (response.ok) {
             const responseData = await response.json()
-            toast.update(id, {
-                render: responseData.message, type: "success", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-            });
             const { Pin } = await responseData
             // console.log(Pin)
             return Pin;
         }
     } catch (error) {
-        toast.update(id, {
-            render: "Something went wrong", type: "error", isLoading: false, autoClose: 5000, hideProgressBar: false, closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-        });
+        console.log(error)
     }
 }
 export const follow = async (_id: string) => {

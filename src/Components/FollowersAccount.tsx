@@ -34,7 +34,6 @@ const FollowersAccount = (
     React.useEffect(() => {
         fetchData()
     }, [item])
-    console.log(data)
     return (
         <>
             <Link

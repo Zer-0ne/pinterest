@@ -62,7 +62,6 @@ const EditForm = (
                         obj[key] = value;
                         return obj;
                     }, {} as ChangedValues);
-                console.log(changedValues)
                 if (session?.user?.id === Data.authorId || sessionUser?.user?.isAdmin) {
                     const response = await editPin(Data._id, changedValues);
                     // if (fetchData) {
