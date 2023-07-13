@@ -2,9 +2,10 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Masonry from '@mui/lab/Masonry';
 import { styles } from '@/utils/styles';
-import { Data, Post } from '@/utils/constant';
+import { Data, Post, SessionsProps } from '@/utils/constant';
 import ImageCard from './ImageCard';
 import { useSession } from 'next-auth/react';
+import { singleUser } from '@/utils/FetchFromApi';
 
 
 export interface MasonryListProps {
@@ -16,6 +17,17 @@ export interface MasonryListProps {
 
 const MasonryList: React.FC<MasonryListProps> = ({ size, data,fetchData }) => {
     const { data: session } = useSession() as Data
+    const [loginedData, setLoginedData] = React.useState<SessionsProps>()
+    const SessionUser = async () => {
+        if (session && session.user) {
+            const loginUser = await singleUser(session.user.id)
+            setLoginedData(loginUser)
+        }
+    }
+
+    React.useEffect(() => {
+        SessionUser()
+    }, [session])
     return (
         <Box sx={[
             styles.displayFlex,
@@ -29,6 +41,8 @@ const MasonryList: React.FC<MasonryListProps> = ({ size, data,fetchData }) => {
                         key={index}
                         fetchData={fetchData}
                         session={session}
+                        loginedData={loginedData}
+                        SessionUser={SessionUser}
                     />
                 ))}
             </Masonry >

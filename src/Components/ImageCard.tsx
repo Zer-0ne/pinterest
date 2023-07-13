@@ -7,37 +7,30 @@ import React from 'react'
 import ModalStructure from './Modal';
 import EditForm from './EditForm';
 import { deletePin, savePost, singleUser } from '@/utils/FetchFromApi';
-import { useSession } from 'next-auth/react';
 
 const ImageCard = (
     {
         item,
         fetchData,
-        session
+        session,
+        loginedData,
+        SessionUser
     }: {
         item: Post,
         fetchData: () => Promise<void>,
         session: {
-            user?: User ;
-        }   
+            user?: User;
+        },
+        loginedData?: SessionsProps | undefined,
+        SessionUser: () => Promise<void>
     }
 ) => {
     const [isHovered, setIsHovered] = React.useState<Boolean>(false);
     const [open, setOpen] = React.useState(false)
-    const [loginedData, setLoginedData] = React.useState<SessionsProps>()
     const [FormData, setFormData] = React.useState<Post[]>()
     // console.log(item)
 
-    const SessionUser = async () => {
-        if (session && session.user) {
-            const loginUser = await singleUser(session.user.id)
-            setLoginedData(loginUser)
-        }
-    }
 
-    React.useEffect(() => {
-        SessionUser()
-    }, [session])
 
     // handle save post 
     const handleSave = async () => {
@@ -109,14 +102,14 @@ const ImageCard = (
             >Save</Button>
             <Box
                 sx={{
-                    opacity: {md:isHovered ? 1 : 0,xs:1},
-                    position: {md:'absolute',xs:'relative'},
+                    opacity: { md: isHovered ? 1 : 0, xs: 1 },
+                    position: { md: 'absolute', xs: 'relative' },
                     right: 10,
                     bottom: 10,
                     transition: 'all .3s ease-in-out'
-                    , display:'flex'
-                    , justifyContent:"end"
-                    , m:'20px 0 7px 0'
+                    , display: 'flex'
+                    , justifyContent: "end"
+                    , m: '20px 0 7px 0'
                 }}
             >
 
@@ -134,7 +127,7 @@ const ImageCard = (
                             }}
                             key={id}
                             sx={[styles.roundedBtn, {
-                                opacity: {md:isHovered ? 1 : 0,xs:1},
+                                opacity: { md: isHovered ? 1 : 0, xs: .2 },
                                 transition: 'all .3s ease-in-out',
                                 m: '0px 8px',
                                 fontWeight: 'bold',
