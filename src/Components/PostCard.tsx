@@ -61,6 +61,7 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
         try {
             if (data && data[0].user) {
                 await follow(data[0].user.id)
+                await fetchdata()
             }
         } catch (error) {
             console.log(error)
@@ -446,7 +447,7 @@ const PostCard: React.FC<card> = ({ data, fetchdata }) => {
                                     sx={[styles.saveBtn, {
                                         alignSelf: 'center',
                                         backgroundColor: 'gray !important',
-                                        position: 'static',
+                                        position: 'relative',
                                         fontSize: 12,
                                         display: (data[0]?.user.id === session?.user?.id) ? 'none' : 'block'
                                     }]}

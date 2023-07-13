@@ -43,6 +43,7 @@ const page = () => {
             >
                 <Profile
                     data={Data[0]?.data}
+                    fetchUserData={sessionUser}
                 />
             </Body>
         </>

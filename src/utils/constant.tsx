@@ -170,7 +170,9 @@ export interface User {
     id: string;
     image: string;
     saved: [];
-    followers: [];
+    followers: [{
+        userId: string;
+    }];
     followings: [{
         userId: string;
     }];

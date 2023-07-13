@@ -12,7 +12,15 @@ import Loading from './Loading'
 import { toast } from 'react-toastify'
 import ModalStructure from './Modal'
 import FollowersAccount from './FollowersAccount'
-const Profile: React.FC<Data> = ({ data }) => {
+const Profile = (
+    {
+        data,
+        fetchUserData
+    }: {
+        data: any
+        fetchUserData: () => Promise<void>
+    }
+) => {
     const { data: session, status: sessionStatus } = useSession() as Data;
     // if (sessionStatus === 'loading') {
     //     return <Loading />;
@@ -68,6 +76,7 @@ const Profile: React.FC<Data> = ({ data }) => {
             if (data && data.user) {
 
                 await follow(data.user.id)
+                await fetchUserData()
             }
         } catch (error) {
             console.error(error)
@@ -348,12 +357,20 @@ const Profile: React.FC<Data> = ({ data }) => {
                     Followers
                     {/* </Typography> */}
                     {
-                        data?.user?.followers?.map((item, index) => (
-                            <FollowersAccount
-                                key={index}
-                                item={item}
-                                session={session as SessionsProps}
-                            />
+                        data?.user?.followers?.map((item:{
+                            userId: string;
+                            _id: string;
+                        }, index:any) => (
+                            (session && session.user) ?
+                                <FollowersAccount
+                                    key={index}
+                                    item={item as {
+                                        userId: string;
+                                        _id: string;
+                                    }}
+                                    session={session as any}
+                                    fetchdata={fetchUserData}
+                                /> : ''
                         ))
                     }
                 </Box>

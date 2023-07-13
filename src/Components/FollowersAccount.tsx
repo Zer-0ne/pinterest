@@ -1,22 +1,24 @@
-import { singleUser } from "@/utils/FetchFromApi"
-import { Data, SessionsProps } from "@/utils/constant"
+import { follow, singleUser } from "@/utils/FetchFromApi"
+import { Data, SessionsProps, User } from "@/utils/constant"
 import { styles } from "@/utils/styles"
 import { Avatar, Box, Typography } from "@mui/material"
-import { User } from "next-auth"
 import { useSession } from "next-auth/react"
+import { BsPersonFillAdd } from "react-icons/bs";
 import Link from "next/link"
 import React from "react"
 
 const FollowersAccount = (
     {
         item,
-        session
+        session,
+        fetchdata
     }: {
         item: {
             userId: string,
             _id: string
         },
-        session: SessionsProps
+        session: any,
+        fetchdata: () => Promise<void>
     }
 ) => {
     // const { data: session } = useSession() as Data
@@ -36,46 +38,80 @@ const FollowersAccount = (
     React.useEffect(() => {
         fetchData()
     }, [item])
+    const handleFollow = async () => {
+        try {
+            if (item) {
+
+                await follow(item.userId)
+                await fetchdata()
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
     return (
         <>
-            <Link
-                href={`/Profile/${data?.id}`}
-            >
-                <Box
-                    sx={[
-                        styles.displayFlex,
-                        styles.alignItemCenter, {
-                            m: '10px 0 '
-                        }
-                    ]}
-                >
+            <Box
+                sx={[
+                    styles.displayFlex,
+                    styles.alignItemCenter,
                     {
-                        (data && data.image) ?
-                            <Avatar
-                                src={data.image}
-                                sx={{
-                                    width: 35,
-                                    height: 35,
-                                    m: '0 10px '
-                                }}
-                            /> : <Avatar
-                                sx={{
-                                    width: 35,
-                                    height: 35,
-                                    m: '0 10px '
-                                }}
-                            />
+                        justifyContent: 'space-between',
+                        m: '0 10px'
                     }
-                    <Typography
-                        variant='body2'
-                        component={`div`}
-                        sx={{
-                            // fontWeight:'600',
-                            fontSize: 18
-                        }}
-                    >{data?.name}</Typography>
-                </Box >
-            </Link>
+                ]}
+            >
+
+                <Link
+                    href={`/Profile/${data?.id}`}
+                >
+                    <Box
+                        sx={[
+                            styles.displayFlex,
+                            styles.alignItemCenter, {
+                                m: '10px 0 '
+                            }
+                        ]}
+                    >
+                        {
+                            (data && data.image) ?
+                                <Avatar
+                                    src={data.image}
+                                    sx={{
+                                        width: 35,
+                                        height: 35,
+                                        m: '0 10px '
+                                    }}
+                                /> : <Avatar
+                                    sx={{
+                                        width: 35,
+                                        height: 35,
+                                        m: '0 10px '
+                                    }}
+                                />
+                        }
+                        <Typography
+                            variant='body2'
+                            component={`div`}
+                            sx={{
+                                // fontWeight:'600',
+                                fontSize: 18
+                            }}
+                        >{data?.name}</Typography>
+                    </Box >
+                </Link>
+                <BsPersonFillAdd
+                    style={{
+                        color: 'white'
+                        , margin: 12
+                        , fontWeight: 'bold'
+                        , fontSize: 20
+                        , cursor: 'pointer'
+                        , opacity: (data?.followers?.some((follow: any) => follow.userId === session?.user?.id)) ? 1 : .2
+                    }}
+                    onClick={handleFollow}
+                />
+            </Box>
         </>
     )
 }

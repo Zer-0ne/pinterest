@@ -15,7 +15,6 @@ export default function Home() {
       });
       if (response.ok) {
         const responseData = await response.json();
-        console.log(responseData)
         const sortedData = await responseData.Pin?.sort((a: any, b: any) => {
           return new Date(b.date).getTime() - new Date(a.date).getTime();
         });

@@ -39,6 +39,7 @@ const page = () => {
             >
                 <Profile
                     data={data[0]?.data}
+                    fetchUserData={fetchData}
                 />
             </Body>
         </>
