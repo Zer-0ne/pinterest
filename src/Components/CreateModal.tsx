@@ -65,25 +65,43 @@ const CreateModal: React.FC<CreateModal> = ({
                             }}
                         >
                             <Box
-                                sx={{
-                                    fontWeight: 'bold',
-                                    fontSize: { md: 24, xs: 16 }
-                                }}
+                                sx={[
+                                    styles.displayFlex,
+                                    styles.justifyCenter,
+                                    styles.alignItemCenter,{
+                                        width:'100%',
+                                        
+                                    }
+                                ]}
                             >
+                                <Button
+                                    sx={[styles.roundedBtn, styles.crossBtn,{
+                                        alignSelf:'start'
+                                    }]}
+                                    onClick={() => setOpen(false)}
+                                >X</Button>
 
-                                Upload assets to create Pins
+                                <Box
+                                    sx={{
+                                        fontWeight: 'bold',
+                                        fontSize: { md: 24, xs: 16 },
+                                        display:'flex',
+                                        justifyContent: "center",
+                                        flex:3,
+
+                                    }}
+                                >
+
+                                    Upload assets to create Pins
+                                </Box>
                             </Box>
-                            <Button
-                                sx={[styles.roundedBtn, styles.crossBtn]}
-                                onClick={() => setOpen(false)}
-                            >X</Button>
                             <Box
                                 sx={{
                                     width: '100%',
                                     flex: 1,
                                     height: 'inherit',
                                     display: 'flex',
-                                    m: {md:4,xs:2},
+                                    m: { md: 4, xs: 2 },
                                     // background: 'black',
                                     p: 2,
                                 }}
