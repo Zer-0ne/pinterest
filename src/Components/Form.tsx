@@ -8,12 +8,14 @@ interface Form {
     setImg: React.Dispatch<React.SetStateAction<File | null>>;
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     handleSubmit: (e: any) => Promise<void>
+    disabled:boolean
 }
 const Form: React.FC<Form> = ({
     img,
     setImg,
     handleChange,
-    handleSubmit
+    handleSubmit,
+    disabled
 }) => {
 
     return (
@@ -132,6 +134,7 @@ const Form: React.FC<Form> = ({
                                         position: 'relative',
                                         borderRadius: 4
                                     }]}
+                                    disabled={disabled}
                                     type="submit"
                                 >Publish</Button>
                             </Box>

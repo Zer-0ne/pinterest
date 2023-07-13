@@ -58,42 +58,50 @@ const Comment = (
             <Box
                 sx={[
                     styles.displayFlex,
-                    styles.alignItemCenter,
                     {
                         wordWrap: 'break-word',
                         m: '8px 0'
                     }
                 ]}
             >
-                {
-                    (!data?.image) ?
-                        <Avatar
-                            sx={{
-                                m: '0 4px',
-                                width: 30,
-                                height: 30,
-                            }}
-                        /> :
-                        <Avatar
-                            sx={{
-                                m: '0 4px',
-                                width: 30,
-                                height: 30,
-                            }}
-                            src={data?.image}
-                        />
-                }
-                <Typography
-                    variant='h4'
-                    component={`h4`}
-                    sx={{
-                        fontSize: 15,
-                        m: '0 3px',
-                        fontWeight: 'bold',
-                    }}
+                <Box
+                    sx={[
+                        styles.displayFlex,
+                        styles.alignItemCenter
+                    ]}
                 >
-                    {data?.name}
-                </Typography>
+
+
+                    {
+                        (!data?.image) ?
+                            <Avatar
+                                sx={{
+                                    m: '0 4px',
+                                    width: 30,
+                                    height: 30,
+                                }}
+                            /> :
+                            <Avatar
+                                sx={{
+                                    m: '0 4px',
+                                    width: 30,
+                                    height: 30,
+                                }}
+                                src={data?.image}
+                            />
+                    }
+                    <Typography
+                        variant='h4'
+                        component={`h4`}
+                        sx={{
+                            fontSize: 15,
+                            m: '0 3px',
+                            fontWeight: 'bold',
+                        }}
+                    >
+                        {data?.name}
+                    </Typography>
+                </Box>
                 <Typography
                     variant='caption'
                     component={`div`}

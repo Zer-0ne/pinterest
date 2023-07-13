@@ -1,4 +1,4 @@
-import { Data, Post, SessionsProps, moreOptionsBtn } from '@/utils/constant';
+import { Data, Post, SessionsProps, User, moreOptionsBtn } from '@/utils/constant';
 import { styles } from '@/utils/styles';
 import { Box, Button } from '@mui/material';
 import Image from 'next/image';
@@ -12,13 +12,16 @@ import { useSession } from 'next-auth/react';
 const ImageCard = (
     {
         item,
-        fetchData
+        fetchData,
+        session
     }: {
         item: Post,
-        fetchData: () => Promise<void>
+        fetchData: () => Promise<void>,
+        session: {
+            user?: User ;
+        }   
     }
 ) => {
-    const { data: session } = useSession() as Data
     const [isHovered, setIsHovered] = React.useState<Boolean>(false);
     const [open, setOpen] = React.useState(false)
     const [loginedData, setLoginedData] = React.useState<SessionsProps>()
@@ -106,11 +109,14 @@ const ImageCard = (
             >Save</Button>
             <Box
                 sx={{
-                    opacity: isHovered ? 1 : 0,
-                    position: 'absolute',
+                    opacity: {md:isHovered ? 1 : 0,xs:1},
+                    position: {md:'absolute',xs:'relative'},
                     right: 10,
                     bottom: 10,
                     transition: 'all .3s ease-in-out'
+                    , display:'flex'
+                    , justifyContent:"end"
+                    , m:'20px 0 7px 0'
                 }}
             >
 
@@ -128,7 +134,7 @@ const ImageCard = (
                             }}
                             key={id}
                             sx={[styles.roundedBtn, {
-                                opacity: isHovered ? 1 : 0,
+                                opacity: {md:isHovered ? 1 : 0,xs:1},
                                 transition: 'all .3s ease-in-out',
                                 m: '0px 8px',
                                 fontWeight: 'bold',

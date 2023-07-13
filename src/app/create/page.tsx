@@ -20,6 +20,7 @@ const page = () => {
     const router = useRouter()
     const [data, setData] = useState<data>({});
     const [img, setImg] = useState<File | null>(null);
+    const [disabled, setDisabled] = useState<boolean>(false)
     const inputRef = React.useRef<HTMLDivElement>(null)
     const formData = new FormData();
     if (sessionStatus === 'loading') {
@@ -45,8 +46,8 @@ const page = () => {
         }
         setData((prevFormData) => ({ ...prevFormData, [name]: value }));
     }
-    if(!session){
-        return <AuthCard/>
+    if (!session) {
+        return <AuthCard />
     }
     const handleSubmit = async (e: any) => {
         const id = toast.loading("Please wait...")
@@ -68,6 +69,7 @@ const page = () => {
             formData.append(key, value)
         });
 
+        setDisabled(true)
         try {
             if (img) {
                 formData.append('image', img)
@@ -87,6 +89,7 @@ const page = () => {
                     theme: "dark", render: responseData.message, type: "success", isLoading: false
                 });
                 setImg(null)
+                setDisabled(false)
                 // console.log(responseData)
             } else {
                 console.error('Failed to fetch data')
@@ -97,8 +100,10 @@ const page = () => {
                     progress: undefined,
                     theme: "dark", render: "Something went wrong", type: "error", isLoading: false
                 });
+                setDisabled(false)
             }
         } catch (error) {
+            setDisabled(false)
             console.log(error)
         }
     }
@@ -154,6 +159,7 @@ const page = () => {
                                 setImg={setImg}
                                 handleChange={handleChange}
                                 handleSubmit={handleSubmit}
+                                disabled={disabled}
                             />
                     }
                 </Box>
