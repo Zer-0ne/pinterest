@@ -5,7 +5,7 @@ import MasonryList from './MasonaryList'
 import { signOut, useSession } from 'next-auth/react'
 import AuthCard from './AuthCard'
 import { follow, singlePin, singleUser } from '@/utils/FetchFromApi'
-import { Data, Post, saveCreateBtn } from '@/utils/constant'
+import { Data, Post, SessionsProps, saveCreateBtn } from '@/utils/constant'
 import { MdVerified, MdVerifiedUser } from "react-icons/md";
 import { FiLogIn, FiLogOut } from "react-icons/fi";
 import Loading from './Loading'
@@ -352,6 +352,7 @@ const Profile: React.FC<Data> = ({ data }) => {
                             <FollowersAccount
                                 key={index}
                                 item={item}
+                                session={session as SessionsProps}
                             />
                         ))
                     }

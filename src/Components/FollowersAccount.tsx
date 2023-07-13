@@ -1,5 +1,5 @@
 import { singleUser } from "@/utils/FetchFromApi"
-import { Data } from "@/utils/constant"
+import { Data, SessionsProps } from "@/utils/constant"
 import { styles } from "@/utils/styles"
 import { Avatar, Box, Typography } from "@mui/material"
 import { User } from "next-auth"
@@ -9,15 +9,17 @@ import React from "react"
 
 const FollowersAccount = (
     {
-        item
+        item,
+        session
     }: {
         item: {
             userId: string,
             _id: string
-        }
+        },
+        session: SessionsProps
     }
 ) => {
-    const { data: session } = useSession() as Data
+    // const { data: session } = useSession() as Data
     const [data, setData] = React.useState<User>()
     const fetchData = async () => {
         try {
