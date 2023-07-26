@@ -4,6 +4,7 @@ import { styles } from '@/utils/styles'
 import { Avatar, Box, Button, Typography } from '@mui/material'
 import { User } from 'next-auth';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 import React from 'react'
 import { MdOutlineDelete } from "react-icons/md";
 import { toast } from 'react-toastify';
@@ -65,44 +66,48 @@ const Comment = (
                     }
                 ]}
             >
-                <Box
-                    sx={[
-                        styles.displayFlex,
-                        styles.alignItemCenter
-                    ]}
+                <Link
+                    href={`/Profile/${item.userId}`}
                 >
-
-
-                    {
-                        (!data?.image) ?
-                            <Avatar
-                                sx={{
-                                    m: '0 4px',
-                                    width: 30,
-                                    height: 30,
-                                }}
-                            /> :
-                            <Avatar
-                                sx={{
-                                    m: '0 4px',
-                                    width: 30,
-                                    height: 30,
-                                }}
-                                src={data?.image}
-                            />
-                    }
-                    <Typography
-                        variant='h4'
-                        component={`h4`}
-                        sx={{
-                            fontSize: 15,
-                            m: '0 3px',
-                            fontWeight: 'bold',
-                        }}
+                    <Box
+                        sx={[
+                            styles.displayFlex,
+                            styles.alignItemCenter
+                        ]}
                     >
-                        {data?.name}
-                    </Typography>
-                </Box>
+
+
+                        {
+                            (!data?.image) ?
+                                <Avatar
+                                    sx={{
+                                        m: '0 4px',
+                                        width: 30,
+                                        height: 30,
+                                    }}
+                                /> :
+                                <Avatar
+                                    sx={{
+                                        m: '0 4px',
+                                        width: 30,
+                                        height: 30,
+                                    }}
+                                    src={data?.image}
+                                />
+                        }
+                        <Typography
+                            variant='h4'
+                            component={`h4`}
+                            sx={{
+                                fontSize: 15,
+                                m: '0 3px',
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            {data?.name}
+                        </Typography>
+                    </Box>
+                </Link>
                 <Typography
                     variant='caption'
                     component={`div`}
