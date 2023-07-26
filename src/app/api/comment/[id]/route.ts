@@ -8,7 +8,7 @@ import { SessionsProps } from "@/utils/constant";
 export const DELETE = async (request: NextRequest, { params }: any) => {
     const session = await getServerSession(AuthOptions) as SessionsProps
     if (!session) {
-        return NextResponse.json({ message: 'please login first' })
+        return NextResponse.json({ message: 'please login first' }, { status: 401 })
     }
     try {
         await connect()

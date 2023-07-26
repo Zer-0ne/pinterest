@@ -21,7 +21,7 @@ export const GET = async (request: NextRequest, { params }: any) => {
         const { id } = params
         const user = await User.findById(id)
         if (!user) {
-            return NextResponse.json({ message: 'User not found!' });
+            return NextResponse.json({ message: 'User not found!' }, { status: 400 });
         }
         const data: Routes = {
             user: {
@@ -38,6 +38,6 @@ export const GET = async (request: NextRequest, { params }: any) => {
         };
         return NextResponse.json({ data })
     } catch (error) {
-        return NextResponse.json({ message: 'Internal server error' })
+        return NextResponse.json({ message: 'Internal server error' }, { status: 500 })
     }
 }

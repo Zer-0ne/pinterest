@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
-import { SessionsProps } from "./constant";
+import { Data, SessionsProps } from "./constant";
+import { useSession } from "next-auth/react";
 
 // 'use server'
 interface FetchFromApiProps {
@@ -63,7 +64,6 @@ export const singlePin = async (_id: string) => {
 export const follow = async (_id: string) => {
     const id = toast.loading("Please wait...")
     try {
-
         const response = await fetch(`/api/follow/${_id}`, {
             method: 'POST',
             headers: {

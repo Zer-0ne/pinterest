@@ -27,7 +27,7 @@ const FollowersAccount = (
         try {
             const response = await singleUser(item.userId)
             if (session && session.user) {
-                const sessionUserResponse = await singleUser(session?.user?.id)
+                await singleUser(session?.user?.id)
             }
             const user = await response?.user || {}
             setData(user)
@@ -108,6 +108,7 @@ const FollowersAccount = (
                         , fontSize: 20
                         , cursor: 'pointer'
                         , opacity: (data?.followers?.some((follow: any) => follow.userId === session?.user?.id)) ? 1 : .2
+                        , display:(session?.user?.id===data?.id)?'none':'flex'
                     }}
                     onClick={handleFollow}
                 />

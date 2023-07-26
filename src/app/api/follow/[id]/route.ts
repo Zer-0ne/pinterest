@@ -15,11 +15,14 @@ export const POST = async (request: NextRequest, { params }: any) => {
     const session = await getServerSession(AuthOptions) as FollowUser;
 
     if (!session?.user?.id) {
-        return NextResponse.json({ message: 'Unauthorized' });
+        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
-
+    
     const { id } = params;
     const loggedInUserId = session.user.id;
+    if(loggedInUserId===id){
+        return NextResponse.json({message:'You can not follow yourself'}, { status: 400 })
+    }
 
     try {
         await connect();

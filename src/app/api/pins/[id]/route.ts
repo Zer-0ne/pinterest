@@ -47,7 +47,7 @@ export const GET = async (request: NextRequest, { params }: any) => {
 export const DELETE = async (request: NextRequest, { params }: any) => {
     const session = await getServerSession(AuthOptions) as SessionsProps
     if (!session) {
-        return NextResponse.json({ message: 'please login first' })
+        return NextResponse.json({ message: 'please login first' }, { status: 401 })
     }
     try {
         await connect()
@@ -72,7 +72,7 @@ export const DELETE = async (request: NextRequest, { params }: any) => {
 export const PUT = async (request: NextRequest, { params }: any) => {
     const session = await getServerSession(AuthOptions) as Routes
     if (!session) {
-        return NextResponse.json({ message: 'please login first' })
+        return NextResponse.json({ message: 'please login first' }, { status: 401 })
     }
     try {
         await connect()
@@ -106,7 +106,7 @@ export const PUT = async (request: NextRequest, { params }: any) => {
                     { new: true }
                 )
                 if (!updatePins) {
-                    return NextResponse.json({ message: 'Pins not found' })
+                    return NextResponse.json({ message: 'Pins not found' }, { status: 400 })
                 }
             }
             const updatedPin = {
@@ -120,11 +120,11 @@ export const PUT = async (request: NextRequest, { params }: any) => {
                 { new: true }
             )
             if (!updatePins) {
-                return NextResponse.json({ message: 'Pins not found' })
+                return NextResponse.json({ message: 'Pins not found' }, { status: 400 })
             }
             return NextResponse.json({ message: 'Pins updated successfully' })
         }
-        return NextResponse.json({ message: 'Unauthorized' });
+        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         // const
     } catch (error: any) {
         return NextResponse.json({ message: error.message })
@@ -134,7 +134,7 @@ export const PUT = async (request: NextRequest, { params }: any) => {
 export const POST = async (request: NextRequest, { params }: { params: any }) => {
     const session = await getServerSession(AuthOptions) as SessionsProps
     if (!session) {
-        return NextResponse.json({ message: 'Unauthorized' });
+        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
     const { id } = params;
     const loggedInUserId = session.user.id
@@ -143,7 +143,7 @@ export const POST = async (request: NextRequest, { params }: { params: any }) =>
         const loggedInUser = await User.findById(loggedInUserId)
         const pins = await Pins.findById(id)
         if (!loggedInUser || !pins) {
-            return NextResponse.json({ message: 'user or pin are not found!' });
+            return NextResponse.json({ message: 'user or pin are not found!' }, { status: 400 });
         }
         const isAlreadySaved = loggedInUser.saved.some((save: any) => save.toString() === id);
         if (isAlreadySaved) {

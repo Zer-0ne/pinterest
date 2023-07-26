@@ -60,7 +60,8 @@ const Comment = (
                     styles.displayFlex,
                     {
                         wordWrap: 'break-word',
-                        m: '8px 0'
+                        m: '8px 0',
+                        alignItems: 'flex-start'
                     }
                 ]}
             >
@@ -108,7 +109,8 @@ const Comment = (
                     sx={{
                         fontSize: 14,
                         m: '0 3px',
-                        flex: 2
+                        flex: 2,
+                        alignSelf: 'center'
                     }}
                 >
                     {item.comment}
@@ -119,7 +121,8 @@ const Comment = (
                         <MdOutlineDelete
                             style={{
                                 justifySelf: 'self-end',
-                                cursor: 'pointer'
+                                cursor: 'pointer',
+                                alignSelf: 'center'
                             }}
                             onClick={handleDelete}
                         />

@@ -9,7 +9,7 @@ import { revalidatePath } from "next/cache";
 export const POST = async (request: NextRequest) => {
     const session = await getServerSession(AuthOptions) as SessionsProps
     if (!session) {
-        return NextResponse.json({ message: 'please login first' })
+        return NextResponse.json({ message: 'please login first' }, { status: 401 })
     }
     try {
         await connect()
