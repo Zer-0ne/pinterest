@@ -20,6 +20,10 @@ const nextConfig = {
         // Adjust the value as per your requirements
         payloadLimit: '100mb'
     },
+    experimental:{
+        serverActions:true,
+        serverActionsBodySizeLimit:'100mb'
+    }
 }
 
 module.exports = nextConfig
