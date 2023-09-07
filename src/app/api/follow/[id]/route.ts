@@ -17,11 +17,11 @@ export const POST = async (request: NextRequest, { params }: any) => {
     if (!session?.user?.id) {
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
-    
+
     const { id } = params;
     const loggedInUserId = session.user.id;
-    if(loggedInUserId===id){
-        return NextResponse.json({message:'You can not follow yourself'}, { status: 400 })
+    if (loggedInUserId === id) {
+        return NextResponse.json({ message: 'You can not follow yourself' }, { status: 400 })
     }
 
     try {
@@ -43,18 +43,17 @@ export const POST = async (request: NextRequest, { params }: any) => {
             }
 
             loggedInUser.followings.splice(followingIndex, 1);
-            followedUser.followers.splice(followingIndex, 1);
             await loggedInUser.save();
-            await followedUser.save();
+
+            const followerIndex = followedUser.followers.findIndex((follower: any) => follower.userId?.toString() === loggedInUserId);
+
+            if (followerIndex !== -1) {
+                followedUser.followers.splice(followerIndex, 1);
+                await followedUser.save();
+            }
+
             return NextResponse.json({ message: 'User unfollowed successfully' });
         }
-
-        loggedInUser.followings.push({ userId: id });
-        followedUser.followers.push({ userId: loggedInUserId });
-        await loggedInUser.save();
-        await followedUser.save();
-
-        return NextResponse.json({ message: 'User followed successfully' });
     } catch (error: any) {
         return NextResponse.json({ message: error.message });
     }
