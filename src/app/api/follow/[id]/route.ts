@@ -54,6 +54,13 @@ export const POST = async (request: NextRequest, { params }: any) => {
 
             return NextResponse.json({ message: 'User unfollowed successfully' });
         }
+
+        loggedInUser.followings.push({ userId: id });
+        followedUser.followers.push({ userId: loggedInUserId });
+        await loggedInUser.save();
+        await followedUser.save();
+
+        return NextResponse.json({ message: 'User followed successfully' });
     } catch (error: any) {
         return NextResponse.json({ message: error.message });
     }
