@@ -33,9 +33,9 @@ export const POST = async (request: NextRequest, { params }: any) => {
             return NextResponse.json({ message: 'User not found' });
         }
 
-        const isAlreadyFollowing = loggedInUser.followings.some((follow: any) => follow.userId?.toString() === id);
+        // const isAlreadyFollowing = loggedInUser.followings.some((follow: any) => follow.userId?.toString() === id);
 
-        if (isAlreadyFollowing) {
+        if (loggedInUser.followings.some((follow: any) => follow.userId?.toString() === id)) {
             const followingIndex = loggedInUser.followings.findIndex((follow: any) => follow.userId?.toString() === id);
 
             if (followingIndex === -1) {
